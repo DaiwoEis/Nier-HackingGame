@@ -55,4 +55,13 @@ public class PathFollow : FunctionBehaviour
         _navMeshAgent.ResetPath();
         _navMeshAgent.velocity = Vector3.zero;
     }
+
+    private void OnDrawGizmos()
+    {
+        if (_currWayPoint < _wayPoints.Length)
+        {
+            Gizmos.color = Color.red;
+            Gizmos.DrawSphere(_wayPoints[_currWayPoint].position, 0.3f);
+        }
+    }
 }

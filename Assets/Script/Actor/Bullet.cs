@@ -1,5 +1,10 @@
-﻿public class Bullet : Actor
+﻿using UnityEngine;
+
+public class Bullet : Actor
 {
+    [SerializeField]
+    private GameObject _destroyGO = null;
+
     protected override void Awake()
     {
         base.Awake();
@@ -12,6 +17,9 @@
         {
             if (_worked) Destroy();
         };
+
+        if (_destroyGO == null)
+            _destroyGO = gameObject;
     }
 
     private void Start()
@@ -45,6 +53,6 @@
             GameStateController.instance.GetState(GameStateType.Paused).onExit -= ResuneFunctions;
         }
 
-        Destroy(gameObject);
+        Destroy(_destroyGO);
     }
 }

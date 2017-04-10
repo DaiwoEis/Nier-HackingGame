@@ -27,7 +27,13 @@ public class Pawn : Actor
     protected AudioClip _hurtClip = null;
 
     [SerializeField]
+    private GameObject _spawnPrefabWhenHurt = null;
+
+    [SerializeField]
     protected AudioClip _deathClip = null;
+
+    [SerializeField]
+    private GameObject _spawnPrefabWhenDeath = null;
 
     protected AudioSource _audioSource = null;
 
@@ -81,6 +87,8 @@ public class Pawn : Actor
 
         OnHurtEnter();
         if (onHurtEnter != null) onHurtEnter();
+        _audioSource.PlayOneShot(_hurtClip);
+        if (_spawnPrefabWhenHurt != null) Instantiate(_spawnPrefabWhenHurt, transform.position, transform.rotation);
 
         CoroutineUtility.UStartCoroutine(_hurtTime, () =>
         {
@@ -92,9 +100,7 @@ public class Pawn : Actor
 
     protected virtual void OnHurtEnter()
     {
-
-        _audioSource.clip = _hurtClip;
-        _audioSource.Play();
+        
     }
 
     protected virtual void OnHurtExit()
@@ -108,8 +114,9 @@ public class Pawn : Actor
 
         _isDead = true;
 
-        _audioSource.clip = _deathClip;
-        _audioSource.Play();
+        _audioSource.PlayOneShot(_deathClip);
+
+        if (_spawnPrefabWhenDeath != null) Instantiate(_spawnPrefabWhenDeath, transform.position, transform.rotation);
 
         CoroutineUtility.UStartCoroutine(_dealthTime, Destroy);       
     }
