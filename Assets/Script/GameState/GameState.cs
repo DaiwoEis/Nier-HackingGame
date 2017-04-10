@@ -54,6 +54,29 @@ public class GameInit : GameState
     {
 
     }
+
+    private float _timer = 0f;
+
+    private readonly float InitTime = 2f;
+
+    public override void OnEnter()
+    {
+        base.OnEnter();
+
+        _timer = 0f;
+    }
+
+    public override void OnUpdate()
+    {
+        base.OnUpdate();
+
+        _timer += Time.deltaTime;
+
+        if (_timer > InitTime)
+        {
+            GameStateController.instance.ChangeState(GameStateType.Running);
+        }
+    }
 }
 
 public class GameRunning : GameState

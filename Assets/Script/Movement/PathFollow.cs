@@ -58,7 +58,7 @@ public class PathFollow : FunctionBehaviour
 
     private void OnDrawGizmos()
     {
-        if (_currWayPoint < _wayPoints.Length)
+        if (_currWayPoint < _wayPoints.Length && _wayPoints[_currWayPoint] != null)
         {
             Gizmos.color = Color.red;
             Gizmos.DrawSphere(_wayPoints[_currWayPoint].position, 0.3f);

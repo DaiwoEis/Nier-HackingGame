@@ -2,16 +2,27 @@
 using System.Collections;
 using UnityEngine;
 
-public class CoroutineUtility : MonoBehaviour 
+public class CoroutineUtility : MonoBehaviour
 {
-    public static CoroutineUtility instance { get; private set; }
+    private static CoroutineUtility _instance = null;
 
-    private void Awake()
+    private static CoroutineUtility instance
     {
-        if (instance == null)
+        get
         {
-            instance = FindObjectOfType<CoroutineUtility>();
-            DontDestroyOnLoad(instance.gameObject);
+            if (_instance == null)
+            {
+                _instance = FindObjectOfType<CoroutineUtility>();
+            }
+
+            if (_instance == null)
+            {
+                _instance = new GameObject("Dont Destroy").AddComponent<CoroutineUtility>();                
+            }
+
+            DontDestroyOnLoad(_instance.gameObject);
+
+            return _instance;
         }
     }
 
@@ -71,9 +82,10 @@ public class CoroutineUtility : MonoBehaviour
 
     private void OnDestroy()
     {
-        if (instance != null)
+        if (_instance != null)
         {
-            instance.StopAllCoroutines();
-        }
+            _instance.StopAllCoroutines();
+            _instance = null;
+        }        
     }
 }

@@ -47,6 +47,7 @@ public class PathGenerator : ScriptableWizard
             number++;
             Vector3 wayPointPos = new Vector3(float.Parse(datas[i + 1]), 0f, float.Parse(datas[i + 2]));
             GameObject wayPoint = new GameObject(pointName + number);
+            IconManager.SetIcon(wayPoint, IconManager.LabelIcon.Yellow);
             wayPoint.transform.SetParent(pathGO.transform);
             wayPoint.transform.SetAsLastSibling();
             wayPoint.transform.localPosition = wayPointPos;
