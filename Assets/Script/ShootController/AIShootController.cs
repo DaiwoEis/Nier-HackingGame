@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class AIShootController : FunctionBehaviour
 {
@@ -14,9 +13,14 @@ public class AIShootController : FunctionBehaviour
     [SerializeField]
     private Transform _shootPoint = null;
 
+    [SerializeField]
+    private AudioClip _shootSound = null;
+
+    private AudioSource _audioSource = null;
+
     private int _sequenceIndex = 0;
 
-    private Coroutine _shootCoroutine = null;
+    private float _timer = 0f;
 
     public enum ShootMethod
     {
@@ -26,22 +30,27 @@ public class AIShootController : FunctionBehaviour
 
     public bool running { get; set; }
 
-    protected override void OnExecute()
+    private void Awake()
     {
-        _shootCoroutine = StartCoroutine(_Shoot());
+        _audioSource = _shootPoint.GetComponent<AudioSource>();
     }
 
-    private IEnumerator _Shoot()
+    protected override void OnExecute()
     {
-        while (true)
+        _timer = _shootIntetval;
+    }
+
+    protected override void OnUpdate()
+    {
+        base.OnUpdate();
+
+        _timer += Time.deltaTime;
+        if (_timer >= _shootIntetval)
         {
-            if (!_running || _pause) continue;
-
             SpawnPrefab();
-
-            yield return new WaitForSeconds(_shootIntetval);
+            if (_shootPoint != null) _audioSource.PlayOneShot(_shootSound);
+            _timer = 0f;
         }
-        // ReSharper disable once IteratorNeverReturns
     }
 
     private void SpawnPrefab()
@@ -59,10 +68,5 @@ public class AIShootController : FunctionBehaviour
                     _shootPoint.rotation);
                 break;
         }
-    }
-
-    protected override void OnEnd()
-    {
-        StopCoroutine(_shootCoroutine);
     }
 }

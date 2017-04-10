@@ -9,11 +9,15 @@ public class PathFollow : FunctionBehaviour
     [SerializeField]
     private Transform[] _wayPoints = null;
 
+    [SerializeField]
+    private bool _updateRotate = true;
+
     private int _currWayPoint = 0;
 
     private void Awake()
     {
         _navMeshAgent = GetComponent<NavMeshAgent>();
+        _navMeshAgent.updateRotation = _updateRotate;
     }
 
     protected override void OnUpdate()
@@ -30,4 +34,25 @@ public class PathFollow : FunctionBehaviour
         _navMeshAgent.SetDestination(_wayPoints[_currWayPoint].position);
     }
 
+    protected override void OnPause()
+    {
+        base.OnPause();
+
+        _navMeshAgent.Stop();
+    }
+
+    protected override void OnResume()
+    {
+        base.OnResume();
+
+        _navMeshAgent.Resume();
+    }
+
+    protected override void OnEnd()
+    {
+        base.OnEnd();
+
+        _navMeshAgent.ResetPath();
+        _navMeshAgent.velocity = Vector3.zero;
+    }
 }

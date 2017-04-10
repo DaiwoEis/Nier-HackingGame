@@ -22,4 +22,19 @@ public class StraightMove : FunctionBehaviour
 
         _rigidbody.velocity = transform.forward*_moveSpeed;
     }
+
+    protected override void OnPause()
+    {
+        base.OnPause();
+
+        _rigidbody.isKinematic = true;
+    }
+
+    protected override void OnResume()
+    {
+        base.OnResume();
+
+        _rigidbody.isKinematic = false;
+        _rigidbody.velocity = transform.forward * _moveSpeed;
+    }
 }

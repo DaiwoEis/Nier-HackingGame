@@ -25,8 +25,11 @@
 
         ExecuteFunctions();
 
-        //GameStateController.instance.GetState(GameStateType.Paused).onEnter += PauseFunctions;
-        //GameStateController.instance.GetState(GameStateType.Paused).onExit += ResuneFunctions;
+        if (GameStateController.instance.currStateType == GameStateType.Paused)
+            PauseFunctions();
+
+        GameStateController.instance.GetState(GameStateType.Paused).onEnter += PauseFunctions;
+        GameStateController.instance.GetState(GameStateType.Paused).onExit += ResuneFunctions;
     }
 
     public override void Destroy()
@@ -35,12 +38,12 @@
 
         EndFunctions();
 
-        //GameStateController gameStateController = GameStateController.instance;
-        //if (gameStateController != null)
-        //{
-        //    GameStateController.instance.GetState(GameStateType.Paused).onEnter -= PauseFunctions;
-        //    GameStateController.instance.GetState(GameStateType.Paused).onExit -= ResuneFunctions;
-        //}
+        GameStateController gameStateController = GameStateController.instance;
+        if (gameStateController != null)
+        {
+            GameStateController.instance.GetState(GameStateType.Paused).onEnter -= PauseFunctions;
+            GameStateController.instance.GetState(GameStateType.Paused).onExit -= ResuneFunctions;
+        }
 
         Destroy(gameObject);
     }

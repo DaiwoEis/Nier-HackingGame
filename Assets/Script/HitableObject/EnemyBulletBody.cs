@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-public class EnemyBulletBody : HitableBehaviour
+public class EnemyBulletBody : NoHealthBody
 {
     [SerializeField]
     private bool _canHittedWithWeakHitter = true;
@@ -17,6 +17,8 @@ public class EnemyBulletBody : HitableBehaviour
 
     public override void Hit(Hitter hitter, HitResult hitResult)
     {
+        base.Hit(hitter, hitResult);
+
         GetComponent<Actor>().Destroy();
     }
 }

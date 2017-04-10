@@ -25,7 +25,6 @@ public class GameState
 
     public virtual void OnEnter()
     {        
-        Debug.Log(stateType);
         if (onEnter != null) onEnter();
     }
 

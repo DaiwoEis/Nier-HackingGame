@@ -1,5 +1,4 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class NoHealthBody : HitableBehaviour
 {
@@ -20,8 +19,7 @@ public class NoHealthBody : HitableBehaviour
     {
         if (_hittedSound != null)
         {
-            _audioSource.clip = _hittedSound;
-            _audioSource.Play();
+            _audioSource.PlayOneShot(_hittedSound);
         }
 
         if (_spawnObjectWhenHit != null)

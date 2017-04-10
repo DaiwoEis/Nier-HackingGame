@@ -15,7 +15,7 @@ public class Pawn : Actor
     private float _hurtTime = 0f;
 
     [SerializeField]
-    private float _dealthTime = 0f;
+    private float _dealthTime = 0.1f;
 
     private bool _isDead = false;
 
@@ -23,22 +23,27 @@ public class Pawn : Actor
 
     private bool _isInvincible = false;
 
+    [SerializeField]
+    protected AudioClip _hurtClip = null;
+
+    [SerializeField]
+    protected AudioClip _deathClip = null;
+
+    protected AudioSource _audioSource = null;
+
     public bool isInvincible { get { return _isInvincible; } }
 
-    public event Action onHurt;
+    public event Action onHurtEnter;
 
     public event Action onHurtExit;
 
     public event Action onDeath;
 
-    protected void TriggerOnHurtEvent()
+    protected override void Awake()
     {
-        if (onHurt != null) onHurt();
-    }
+        base.Awake();
 
-    protected void TriggerOnHurtExitEvent()
-    {
-        if (onHurtExit != null) onHurtExit();
+        _audioSource = GetComponent<AudioSource>();
     }
 
     protected void TriggerOnDeathEvent()
@@ -70,16 +75,31 @@ public class Pawn : Actor
         _isDead = false;
     }
 
-    protected virtual void Hurt()
+    protected void Hurt()
     {
-        TriggerOnHurtEvent();
-
         _isInvincible = true;
+
+        OnHurtEnter();
+        if (onHurtEnter != null) onHurtEnter();
+
         CoroutineUtility.UStartCoroutine(_hurtTime, () =>
         {
             _isInvincible = false;
+            OnHurtExit();
             if (onHurtExit != null) onHurtExit();
         });
+    }
+
+    protected virtual void OnHurtEnter()
+    {
+
+        _audioSource.clip = _hurtClip;
+        _audioSource.Play();
+    }
+
+    protected virtual void OnHurtExit()
+    {
+        
     }
 
     public virtual void Death()
@@ -88,11 +108,16 @@ public class Pawn : Actor
 
         _isDead = true;
 
+        _audioSource.clip = _deathClip;
+        _audioSource.Play();
+
         CoroutineUtility.UStartCoroutine(_dealthTime, Destroy);       
     }
 
     public override void Destroy()
     {
+        _worked = false;
+
         TriggerOnDestroyEvent();
 
         Destroy(gameObject);

@@ -12,9 +12,16 @@ public class PlayerShootController : FunctionBehaviour
     private float _shootInterval = 0.5f;
 
     [SerializeField]
+    private AudioClip _shootSound = null;
+
     private AudioSource _audioSource = null;
 
     private float _timer = 0f;
+
+    private void Awake()
+    {
+        _audioSource = _shootPoint.GetComponent<AudioSource>();
+    }
 
     protected override void OnExecute()
     {
@@ -36,7 +43,10 @@ public class PlayerShootController : FunctionBehaviour
 
     private void Shoot()
     {
-        if (_audioSource != null) _audioSource.Play();
+        if (_shootSound != null)
+        {
+            _audioSource.PlayOneShot(_shootSound);
+        }
         Instantiate(_bulletPrefab, _shootPoint.position, _shootPoint.rotation);
     }
 }
