@@ -93,4 +93,31 @@ public class FunctionBehaviour : MonoBehaviour
     }
 
     protected virtual void onTriggerExit(Collider other) { }
+
+    protected void OnCollisionEnter(Collision other)
+    {
+        if (_pause || !_running) return;
+
+        onCollisionEnter(other);
+    }
+
+    protected virtual void onCollisionEnter(Collision other) { }
+
+    protected void OnCollisionStay(Collision other)
+    {
+        if (_pause || !_running) return;
+
+        onCollisionStay(other);
+    }
+
+    protected virtual void onCollisionStay(Collision other) { }
+
+    protected void OnCollisionExit(Collision other)
+    {
+        if (_pause || !_running) return;
+
+        onCollisionExit(other);
+    }
+
+    protected virtual void onCollisionExit(Collision other) { }
 }

@@ -2,6 +2,7 @@
 
 public class AIShootController : FunctionBehaviour
 {
+    [SerializeField]
     private float _shootIntetval = 1f;
 
     [SerializeField]

@@ -3,7 +3,7 @@
 public class Swing : FunctionBehaviour
 {
     [SerializeField]
-    private float _angle = 90f;
+    private float _maxAngle = 90f;
 
     [SerializeField]
     private float _rotationSpeed = 30f;
@@ -18,7 +18,7 @@ public class Swing : FunctionBehaviour
 
     private void Awake()
     {
-        _compeleteTime = _angle/_rotationSpeed*2f;
+        _compeleteTime = _maxAngle/_rotationSpeed*2f;
     }
 
     private void Start()
@@ -36,7 +36,7 @@ public class Swing : FunctionBehaviour
     protected override void OnUpdate()
     {
         _timer += Time.deltaTime;
-        float angle = Mathf.Lerp(-_angle, _angle, Mathf.PingPong(_timer, _compeleteTime) / _compeleteTime);
+        float angle = Mathf.Lerp(-_maxAngle, _maxAngle, Mathf.PingPong(_timer, _compeleteTime) / _compeleteTime);
         transform.rotation = _originRotation*Quaternion.Euler(0f, angle, 0f);
     }
 }
