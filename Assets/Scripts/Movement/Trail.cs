@@ -34,13 +34,13 @@ public class Trail : FunctionBehaviour
     {
         base.OnPause();
 
-        _navMeshAgent.Stop();
+        _navMeshAgent.isStopped = true;
     }
 
     protected override void OnResume()
     {
         base.OnResume();
 
-        _navMeshAgent.Resume();
+        _navMeshAgent.isStopped = false;
     }
 }

@@ -11,6 +11,9 @@ public class PlayerMovementController : FunctionBehaviour
 
     private Rigidbody _rigidbody = null;
 
+    [SerializeField]
+    private InputConroller _inputConroller = null;
+
     private void Awake()
     {
         _rigidbody = GetComponent<Rigidbody>();
@@ -27,12 +30,11 @@ public class PlayerMovementController : FunctionBehaviour
     {
         Vector3 moveDirection;
         if (CheckMove(out moveDirection))
-        {
+        {            
             Vector3 rotateDirection;
             if (CheckRotate())
             {
-                rotateDirection = new Vector3(Input.GetAxisRaw("RightHorizontal"), 0f, Input.GetAxisRaw("RightVertical"));
-                rotateDirection.Normalize();              
+                rotateDirection = _inputConroller.GetAxis<RotateAxis>();          
             }
             else
             {
@@ -46,8 +48,7 @@ public class PlayerMovementController : FunctionBehaviour
         {
             if (CheckRotate())
             {
-                Vector3 rotateDirection = new Vector3(Input.GetAxisRaw("RightHorizontal"), 0f, Input.GetAxisRaw("RightVertical"));
-                rotateDirection.Normalize();
+                Vector3 rotateDirection = _inputConroller.GetAxis<RotateAxis>();
                 transform.forward = Vector3.Lerp(transform.forward, rotateDirection, _rotationSpeed*Time.deltaTime);
             }
             _rigidbody.velocity = Vector3.zero;
@@ -56,17 +57,15 @@ public class PlayerMovementController : FunctionBehaviour
 
     private bool CheckRotate()
     {
-        return Mathf.Abs(Input.GetAxisRaw("RightVertical")) > 0.3f ||
-               Mathf.Abs(Input.GetAxisRaw("RightHorizontal")) > 0.3f;
+        return _inputConroller.GetAxis<RotateAxis>() != Vector3.zero;
     }
 
     private bool CheckMove(out Vector3 moveDirection)
     {
-        float v = Input.GetAxisRaw("Vertical");
-        float h = Input.GetAxisRaw("Horizontal");
-        if (Mathf.Abs(v) > 0.3f || Mathf.Abs(h) > 0.3f)
+        Vector3 localInput = _inputConroller.GetAxis<MoveAxis>();           
+        if (Mathf.Abs(localInput.x) > 0.3f || Mathf.Abs(localInput.z) > 0.3f)
         {
-            moveDirection = new Vector3(h, 0f, v);
+            moveDirection = localInput;
             moveDirection.Normalize();
             return true;
         }

@@ -17,7 +17,7 @@ public abstract class MoveToTarget
 
     public Vector3 Run(Vector3 targetPoint)
     {
-        if (PlaneDistanceUtility.Distance(targetPoint, _moveableObject.position) > _stopDistance*_stopDistance)
+        if (PlaneUtility.Distance(targetPoint, _moveableObject.position) > _stopDistance*_stopDistance)
         {
             return GetVelocity(targetPoint);
         }

@@ -50,7 +50,7 @@ public class RandomTrail : FunctionBehaviour
     {
         if (!_straightMove)
         {
-            _straightMove = PlaneDistanceUtility.SqrtDistance(transform.position, _trailPoint) < 0.09f;
+            _straightMove = PlaneUtility.SqrtDistance(transform.position, _trailPoint) < 0.09f;
         }
 
         if (!_straightMove)

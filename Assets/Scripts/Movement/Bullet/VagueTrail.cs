@@ -60,7 +60,7 @@ public class VagueTrail : FunctionBehaviour
     {
         base.OnFixedUpdate();
 
-        float t = PlaneDistanceUtility.Distance(transform.position, _target.position)/_canTrailDistance;
+        float t = PlaneUtility.Distance(transform.position, _target.position)/_canTrailDistance;
         t = Mathf.Clamp01(t);
         t = 1f - t;
         float attractSpeed = Mathf.Lerp(_attactMinSpeed, _attractMaxSpeed, t);

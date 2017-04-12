@@ -1,7 +1,13 @@
 ﻿using UnityEngine;
 
-public static class PlaneDistanceUtility 
+public static class PlaneUtility 
 {
+    public static Vector3 Direction(Vector3 direction)
+    {
+        direction.y = 0f;
+        return direction.normalized;
+    }
+
     public static float Distance(Vector3 pos1, Vector3 pos2)
     {
         pos1.y = pos2.y = 0f;

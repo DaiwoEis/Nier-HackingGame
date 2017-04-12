@@ -25,7 +25,7 @@ public class PathFollow : FunctionBehaviour
 
     protected override void OnUpdate()
     {
-        if (PlaneDistanceUtility.SqrtDistance(transform.position, _wayPoints[_currWayPoint].position) <
+        if (PlaneUtility.SqrtDistance(transform.position, _wayPoints[_currWayPoint].position) <
             _arriveDistance*_arriveDistance)
         {
             _currWayPoint = (_currWayPoint + 1)%_wayPoints.Length;
@@ -42,14 +42,14 @@ public class PathFollow : FunctionBehaviour
     {
         base.OnPause();
 
-        _navMeshAgent.Stop();
+        _navMeshAgent.isStopped = true;
     }
 
     protected override void OnResume()
     {
         base.OnResume();
 
-        _navMeshAgent.Resume();
+        _navMeshAgent.isStopped = false;
     }
 
     protected override void OnEnd()
