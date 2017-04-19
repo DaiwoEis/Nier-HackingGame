@@ -73,3 +73,51 @@ public class ControllerShootButton : ShootButton
         _lastFrameAxisData = currFrameAxisData;
     }
 }
+
+public class MobileShootButton : ShootButton
+{
+    private ScrollCircle _rightScrollCircle = null;
+
+    public MobileShootButton()
+    {
+        _rightScrollCircle = GameObject.FindWithTag(TagConfig.RightMobileAxis).GetComponent<ScrollCircle>();
+    }
+
+    private bool _lastFrameIsDraging = false;
+
+    private bool _buttonDown = false;
+
+    private bool _buttonUp = false;
+
+    public override bool Down()
+    {
+        return _buttonDown;
+    }
+
+    public override bool Up()
+    {
+        return _buttonUp;
+    }
+
+    public override bool Hold()
+    {
+        return _rightScrollCircle.draging;
+    }
+
+    public override void Update()
+    {
+        if (_buttonDown) _buttonDown = false;
+        if (_buttonUp) _buttonUp = false;
+
+        bool currFrameIsDraging = _rightScrollCircle.draging;
+        if (_lastFrameIsDraging == false && currFrameIsDraging)
+        {
+            _buttonDown = true;
+        }
+        else if (_lastFrameIsDraging && currFrameIsDraging == false)
+        {
+            _buttonUp = true;
+        }
+        _lastFrameIsDraging = currFrameIsDraging;
+    }
+}

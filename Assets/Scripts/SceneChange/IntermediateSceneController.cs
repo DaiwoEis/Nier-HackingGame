@@ -10,28 +10,41 @@ public class IntermediateSceneController : MonoBehaviour
 
 	private void Start ()
 	{
-	    StartCoroutine(LoadScene());
+	    StartCoroutine(_LoadScene(CSceneManager.NextScene));
 	}
 
-    private IEnumerator LoadScene()
+    private IEnumerator _LoadScene(string scene)
     {
-        AsyncOperation async = SceneManager.LoadSceneAsync(CSceneManager.NextScene, LoadSceneMode.Additive);
-        while (!async.isDone)
-        {          
-            _slider.value = async.progress;         
-            yield return null;
+        int displayProgress = 0;
+        int toProgress;
+        AsyncOperation op = SceneManager.LoadSceneAsync(scene);
+        op.allowSceneActivation = false;
+        while (op.progress < 0.9f)
+        {
+            toProgress = (int)op.progress * 100;
+            while (displayProgress < toProgress)
+            {
+                ++displayProgress;
+                SetLoadingPercentage(displayProgress);
+                yield return new WaitForEndOfFrame();
+            }
         }
 
-        foreach (var go in GameObject.FindGameObjectsWithTag(TagConfig.DontDestroyOnIntermediateScene))
+        toProgress = 100;
+        while (displayProgress < toProgress)
         {
-            SceneManager.MoveGameObjectToScene(go, SceneManager.GetSceneByName(CSceneManager.NextScene));
+            ++displayProgress;
+            SetLoadingPercentage(displayProgress);
+            yield return new WaitForEndOfFrame();
         }
-        SceneManager.SetActiveScene(SceneManager.GetSceneByName(CSceneManager.NextScene));
-        SceneManager.UnloadSceneAsync(CSceneManager.IntermidiateScene);
+
+        op.allowSceneActivation = true;
         CSceneManager.NextScene = "";
-        SceneChangeEffect effect = Camera.main.GetComponent<SceneChangeEffect>();
-        if (effect != null)
-            effect.RunReverse();
+    }
+
+    private void SetLoadingPercentage(int displayProgress)
+    {
+        _slider.value = displayProgress;
     }
 
 }

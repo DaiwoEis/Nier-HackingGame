@@ -1,1 +1,1 @@
-﻿CoroutineUtility,GameStateController,ViewController
+﻿CoroutineUtility,InputController,GameStateController,ViewController

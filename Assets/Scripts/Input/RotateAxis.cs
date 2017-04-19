@@ -12,7 +12,7 @@ public class KeyboardRotateAxis : RotateAxis
 
     public KeyboardRotateAxis()
     {
-        _player = GameObject.FindWithTag("Player").transform;
+        _player = GameObject.FindWithTag(TagConfig.Player).transform;
     }
 
     public override Vector3 Axis()
@@ -44,5 +44,25 @@ public class ControllerRotateAxis : RotateAxis
     public override void Update()
     {
         
+    }
+}
+
+public class MobileRotateAxis : RotateAxis
+{
+    private ScrollCircle _scrollCircle = null;
+
+    public MobileRotateAxis()
+    {
+        _scrollCircle = GameObject.FindWithTag(TagConfig.RightMobileAxis).GetComponent<ScrollCircle>();
+    }
+
+    public override Vector3 Axis()
+    {
+        return new Vector3(_scrollCircle.axis.x, 0f, _scrollCircle.axis.y);
+    }
+
+    public override void Update()
+    {
+
     }
 }

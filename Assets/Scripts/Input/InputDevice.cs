@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 
 public abstract class InputDevice
@@ -33,7 +32,7 @@ public abstract class InputDevice
         }
     }
 
-    public void CreateDirections(IEnumerable<string> directions)
+    public void CreateAxises(IEnumerable<string> directions)
     {
         foreach (var directionName in directions)
         {
@@ -84,5 +83,5 @@ public abstract class InputDevice
         }
     }
 
-    public abstract void TestChangeDevice(InputConroller inputConroller);
+    public abstract void TestChangeDevice(InputController inputController);
 }

@@ -14,11 +14,7 @@ public abstract class MonoSingleton<T> : MonoBehaviour where T : MonoSingleton<T
 
             if (_instance == null)
             {
-                GameObject contaioner = new GameObject(typeof(T).ToString())
-                {
-                    tag = TagConfig.DontDestroyOnIntermediateScene
-                };
-                _instance = contaioner.AddComponent<T>();
+                _instance = new GameObject(typeof(T).ToString()).AddComponent<T>();
             }
 
             _instance.Init();

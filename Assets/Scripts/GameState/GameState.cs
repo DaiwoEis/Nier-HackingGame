@@ -1,13 +1,12 @@
 ﻿using System;
 using UnityEngine;
 
-[Serializable]
-public class GameState
+public class GameState : MonoBehaviour
 {
     protected GameStateController _stateController = null;
 
     [SerializeField]
-    private GameStateType _stateType;
+    protected GameStateType _stateType;
 
     public GameStateType stateType { get { return _stateType; } }
     
@@ -17,10 +16,9 @@ public class GameState
 
     public event Action onUpdate = null;
 
-    public GameState(GameStateController stateController, GameStateType stateType)
+    public virtual void Init()
     {
-        _stateController = stateController;
-        _stateType = stateType;
+        _stateController = GetComponent<GameStateController>();
     }
 
     public virtual void OnEnter()
@@ -42,71 +40,9 @@ public class GameState
 public enum GameStateType
 {
     Init,
+    Ready,
     Running,
     Paused,
     Succeed,
     Failure
-}
-
-public class GameInit : GameState
-{
-    public GameInit(GameStateController stateController) : base(stateController, GameStateType.Init)
-    {
-
-    }
-
-    private float _timer = 0f;
-
-    private readonly float InitTime = 1f;
-
-    public override void OnEnter()
-    {
-        base.OnEnter();
-
-        _timer = 0f;
-    }
-
-    public override void OnUpdate()
-    {
-        base.OnUpdate();
-
-        _timer += Time.deltaTime;
-
-        if (_timer > InitTime)
-        {
-            GameStateController.instance.ChangeState(GameStateType.Running);
-        }
-    }
-}
-
-public class GameRunning : GameState
-{
-    public GameRunning(GameStateController stateController) : base(stateController, GameStateType.Running)
-    {
-
-    }
-}
-
-public class GamePaused : GameState
-{
-    public GamePaused(GameStateController stateController) : base(stateController, GameStateType.Paused)
-    {
-
-    }
-}
-
-public class GameFailure : GameState
-{
-    public GameFailure(GameStateController stateController) : base(stateController, GameStateType.Failure)
-    {
-
-    }
-}
-
-public class GameSucceed : GameState
-{
-    public GameSucceed(GameStateController stateController) : base(stateController, GameStateType.Succeed)
-    {
-
-    }
 }

@@ -29,17 +29,17 @@ public class SceneChangeEffect : MonoBehaviour
         }          
     }
 
-    public void Run(Action onComplete)
+    public void Run(Action onComplete = null)
     {
         StartCoroutine(_Run(onComplete));
     }
 
-    public void RunReverse()
+    public void RunReverse(Action onComplete = null)
     {
-        StartCoroutine(_RunReverse());
+        StartCoroutine(_RunReverse(onComplete));
     }
 
-    private IEnumerator _Run(Action onComplete)
+    private IEnumerator _Run(Action onComplete = null)
     {
         _start = true;
         float timer = 0f;
@@ -49,10 +49,10 @@ public class SceneChangeEffect : MonoBehaviour
             yield return null;
             timer += Time.unscaledDeltaTime;
         }
-        onComplete();
+        if (onComplete != null) onComplete();
     }
 
-    private IEnumerator _RunReverse()
+    private IEnumerator _RunReverse(Action onComplete = null)
     {
         _start = true;
         float timer = 0f;
@@ -63,5 +63,6 @@ public class SceneChangeEffect : MonoBehaviour
             timer += Time.unscaledDeltaTime;
         }
         _start = false;
+        if (onComplete != null) onComplete();
     }
 }

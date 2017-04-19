@@ -7,7 +7,7 @@ public class PathGenerator : ScriptableWizard
     [SerializeField]
     private TextAsset _pathData = null;
 
-    [MenuItem("Window/Path")]
+    [MenuItem("Help/Path")]
     public static void GeneratePath()
     {
         DisplayWizard<PathGenerator>("Create a path", "Create", "Apply");

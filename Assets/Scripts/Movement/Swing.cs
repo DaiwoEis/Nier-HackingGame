@@ -23,7 +23,7 @@ public class Swing : FunctionBehaviour
 
     private void Start()
     {
-        _originRotation = transform.rotation;
+        _originRotation = transform.localRotation;
     }
 
     protected override void OnExecute()
@@ -37,6 +37,6 @@ public class Swing : FunctionBehaviour
     {
         _timer += Time.deltaTime;
         float angle = Mathf.Lerp(-_maxAngle, _maxAngle, Mathf.PingPong(_timer, _compeleteTime) / _compeleteTime);
-        transform.rotation = _originRotation*Quaternion.Euler(0f, angle, 0f);
+        transform.localRotation = _originRotation*Quaternion.Euler(0f, angle, 0f);
     }
 }

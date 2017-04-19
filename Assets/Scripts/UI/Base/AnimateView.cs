@@ -7,7 +7,7 @@ namespace CUI
     {
         protected Animator _animator;
 
-	    protected override void Awake()
+        protected override void Awake()
 	    {
             base.Awake();
 

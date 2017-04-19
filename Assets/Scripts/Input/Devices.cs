@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class KeyboardDevice : InputDevice 
 {
-    public override void TestChangeDevice(InputConroller inputConroller)
+    public override void TestChangeDevice(InputController inputController)
     {
         if (Input.GetKey(KeyCode.Joystick1Button0) ||
             Input.GetKey(KeyCode.Joystick1Button1) ||
@@ -31,19 +31,27 @@ public class KeyboardDevice : InputDevice
             Math.Abs(Input.GetAxis("RightHorizontal")) > 0.00001f ||
             Math.Abs(Input.GetAxis("RightVertical")) > 0.00001f)
         {
-            inputConroller.ChangeDevice<ControllerDevice>();
+            inputController.ChangeDevice<ControllerDevice>();
         }
     }
 }
 
 public class ControllerDevice : InputDevice
 {
-    public override void TestChangeDevice(InputConroller inputConroller)
+    public override void TestChangeDevice(InputController inputController)
     {
         if (Event.current.isKey || Event.current.isMouse || Math.Abs(Input.GetAxis("Mouse X")) > 0.00001f ||
             Math.Abs(Input.GetAxis("Mouse Y")) > 0.00001f)
         {
-            inputConroller.ChangeDevice<KeyboardDevice>();
+            inputController.ChangeDevice<KeyboardDevice>();
         }
+    }
+}
+
+public class MobileDevice : InputDevice
+{
+    public override void TestChangeDevice(InputController inputController)
+    {
+        
     }
 }

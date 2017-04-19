@@ -51,3 +51,23 @@ public class ControllerMoveAxis : MoveAxis
         
     }
 }
+
+public class MobileMoveAxis : MoveAxis
+{
+    private ScrollCircle _scrollCircle = null;
+
+    public MobileMoveAxis()
+    {
+        _scrollCircle = GameObject.FindWithTag("LeftMobileAxis").GetComponent<ScrollCircle>();
+    }
+
+    public override Vector3 Axis()
+    {
+        return new Vector3(_scrollCircle.axis.x, 0f, _scrollCircle.axis.y);
+    }
+
+    public override void Update()
+    {
+        
+    }
+}

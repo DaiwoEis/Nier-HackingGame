@@ -1,4 +1,6 @@
-﻿public class Enemy : Pawn 
+﻿using UnityEngine;
+
+public class Enemy : Pawn 
 {
     protected override void Awake()
     {
@@ -22,6 +24,14 @@
     {
         base.Death();
 
+        GameStateController.instance.GetState(GameStateType.Paused).onEnter -= PauseFunctions;
+        GameStateController.instance.GetState(GameStateType.Paused).onExit -= ResuneFunctions;
+
         EndFunctions();
+
+        foreach (var meshRenderer in GetComponentsInChildren<MeshRenderer>())
+        {
+            meshRenderer.enabled = false;
+        }
     }
 }

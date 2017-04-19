@@ -16,9 +16,6 @@ public class PlayerShootController : FunctionBehaviour
 
     private AudioSource _audioSource = null;
 
-    [SerializeField]
-    private InputConroller _inputConroller = null;
-
     private float _timer = 0f;
 
     private void Awake()
@@ -35,7 +32,7 @@ public class PlayerShootController : FunctionBehaviour
 
     protected override void OnUpdate()
     {
-        if (_inputConroller.GetButtonHold<ShootButton>() && _timer >= _shootInterval)
+        if (InputController.instance.GetButtonHold<ShootButton>() && _timer >= _shootInterval)
         {
             Shoot();
             _timer = 0f;

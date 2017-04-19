@@ -19,11 +19,11 @@ public class GameStateController : MonoSingleton<GameStateController>
     {
         base.Init();
 
-        _states[GameStateType.Init] = new GameInit(this);
-        _states[GameStateType.Running] = new GameRunning(this);
-        _states[GameStateType.Paused] = new GamePaused(this);
-        _states[GameStateType.Succeed] = new GameSucceed(this);
-        _states[GameStateType.Failure] = new GameFailure(this);
+        foreach (var gameState in GetComponents<GameState>())
+        {
+            gameState.Init();
+            _states.Add(gameState.stateType, gameState);
+        }
 
         GetState(GameStateType.Running).onEnter += () =>
         {
@@ -33,6 +33,8 @@ public class GameStateController : MonoSingleton<GameStateController>
                 _gameStarted = true;
             }
         };
+
+        ChangeState(GameStateType.Init);
     }
 
     private void Update()
@@ -62,14 +64,6 @@ public class GameStateController : MonoSingleton<GameStateController>
         if (_currState != null)
         {
             _currState.OnEnter();
-        }
-    }
-
-    public void ChangeStateFromTo(GameStateType currST, GameStateType nextST)
-    {
-        if (_currState.stateType == currST)
-        {
-            ChangeState(nextST);
         }
     }
 }

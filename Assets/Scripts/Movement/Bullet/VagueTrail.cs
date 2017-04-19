@@ -7,10 +7,7 @@ public class VagueTrail : FunctionBehaviour
     private float _initSpeed = 5f;
 
     [SerializeField]
-    private float _attactMinSpeed = 1f;
-
-    [SerializeField]
-    private float _attractMaxSpeed = 5f;
+    private float _attractMaxForce = 10f;
 
     [SerializeField]
     private float _canTrailDistance = 10f;
@@ -19,6 +16,8 @@ public class VagueTrail : FunctionBehaviour
 
     [SerializeField]
     private string _targetTag = "";
+
+    private Vector3 _pasuedVelocity = Vector3.zero;
 
     private Transform _target = null;
 
@@ -39,6 +38,7 @@ public class VagueTrail : FunctionBehaviour
     {
         base.OnPause();
 
+        _pasuedVelocity = _rigidbody.velocity;
         _rigidbody.isKinematic = true;
     }
 
@@ -47,6 +47,7 @@ public class VagueTrail : FunctionBehaviour
         base.OnResume();
 
         _rigidbody.isKinematic = false;
+        _rigidbody.velocity = _pasuedVelocity;
     }
 
     protected override void OnEnd()
@@ -63,14 +64,11 @@ public class VagueTrail : FunctionBehaviour
         float t = PlaneUtility.Distance(transform.position, _target.position)/_canTrailDistance;
         t = Mathf.Clamp01(t);
         t = 1f - t;
-        float attractSpeed = Mathf.Lerp(_attactMinSpeed, _attractMaxSpeed, t);
-        Vector3 direction = _target.position - transform.position;
-        direction.y = 0f;
-        direction.Normalize();
-        _rigidbody.velocity = _rigidbody.velocity + direction*attractSpeed;
-        //if (_rigidbody.velocity.sqrMagnitude > _maxSpeed*_maxSpeed)
-        //{
-        //    _rigidbody.velocity = _rigidbody.velocity.normalized*_maxSpeed;
-        //}
+        t *= t;
+        float attractForce = Mathf.Lerp(0f, _attractMaxForce, t);
+        Vector3 toTarget = _target.position - transform.position;
+        toTarget.y = 0f;
+        toTarget.Normalize();
+        _rigidbody.AddForce(toTarget*attractForce);
     }
 }

@@ -11,12 +11,12 @@ public class PlayerMovementController : FunctionBehaviour
 
     private Rigidbody _rigidbody = null;
 
-    [SerializeField]
-    private InputConroller _inputConroller = null;
+    private InputController _inputController = null;
 
     private void Awake()
     {
         _rigidbody = GetComponent<Rigidbody>();
+        _inputController = InputController.instance;
     }
 
     protected override void OnEnd()
@@ -34,7 +34,7 @@ public class PlayerMovementController : FunctionBehaviour
             Vector3 rotateDirection;
             if (CheckRotate())
             {
-                rotateDirection = _inputConroller.GetAxis<RotateAxis>();          
+                rotateDirection = _inputController.GetAxis<RotateAxis>();          
             }
             else
             {
@@ -48,7 +48,7 @@ public class PlayerMovementController : FunctionBehaviour
         {
             if (CheckRotate())
             {
-                Vector3 rotateDirection = _inputConroller.GetAxis<RotateAxis>();
+                Vector3 rotateDirection = _inputController.GetAxis<RotateAxis>();
                 transform.forward = Vector3.Lerp(transform.forward, rotateDirection, _rotationSpeed*Time.deltaTime);
             }
             _rigidbody.velocity = Vector3.zero;
@@ -57,12 +57,12 @@ public class PlayerMovementController : FunctionBehaviour
 
     private bool CheckRotate()
     {
-        return _inputConroller.GetAxis<RotateAxis>() != Vector3.zero;
+        return _inputController.GetAxis<RotateAxis>() != Vector3.zero;
     }
 
     private bool CheckMove(out Vector3 moveDirection)
     {
-        Vector3 localInput = _inputConroller.GetAxis<MoveAxis>();           
+        Vector3 localInput = _inputController.GetAxis<MoveAxis>();           
         if (Mathf.Abs(localInput.x) > 0.3f || Mathf.Abs(localInput.z) > 0.3f)
         {
             moveDirection = localInput;
