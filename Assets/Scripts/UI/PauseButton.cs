@@ -5,10 +5,8 @@ using UnityEngine.UI;
 public class PauseButton : MonoBehaviour
 {
 
-#if MOBILE_PLATFORM
-        [SerializeField]
-        private BaseView _pausedView = null;
-#endif
+    [SerializeField]
+    private BaseView _pausedView = null;
 
     private void Awake()
     {
@@ -16,7 +14,13 @@ public class PauseButton : MonoBehaviour
         _pausedView.onEnter += () => gameObject.SetActive(false);
         _pausedView.onExit += () => gameObject.SetActive(true);
 
-        GetComponent<Button>().onClick.AddListener(() => GameStateController.instance.ChangeState(GameStateType.Paused));
+        GetComponent<Button>().onClick.AddListener(() =>
+        {
+            if (GameStateController.instance.currStateType == GameStateType.Running)
+            {
+                GameStateController.instance.ChangeState(GameStateType.Paused);
+            }
+        });
 #else
         gameObject.SetActive(false);
 #endif

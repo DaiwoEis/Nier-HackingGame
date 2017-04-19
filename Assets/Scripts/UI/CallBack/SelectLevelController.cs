@@ -6,4 +6,9 @@ public class SelectLevelController : MonoBehaviour
     {
         CoroutineUtility.UStartCoroutineReal(0.5f, () => CSceneManager.LoadScene(levelName));
     }
+
+    public void QuitGameCallBack()
+    {
+        Application.Quit();
+    }
 }
