@@ -35,6 +35,9 @@ public class PathFollow : FunctionBehaviour
 
     protected override void OnExecute()
     {
+        if (_navMeshAgent == null)
+            _navMeshAgent = GetComponent<NavMeshAgent>();
+
         _navMeshAgent.SetDestination(_wayPoints[_currWayPoint].position);
     }
 

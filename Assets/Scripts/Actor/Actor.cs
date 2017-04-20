@@ -1,13 +1,11 @@
 ﻿using System;
 using UnityEngine;
 
-public class Actor : MonoBehaviour
+public abstract class Actor : MonoBehaviour
 {
     public event Action onSpawn = null;
 
     public event Action onDestroy = null;
-
-    protected bool _worked = false;
 
     protected FunctionBehaviour[] _functions = null;
 
@@ -16,33 +14,27 @@ public class Actor : MonoBehaviour
         _functions = GetComponents<FunctionBehaviour>();
     }
 
-    public virtual void Spawn()
-    {
-        TriggerOnSpawnEvent();
-        _worked = true;
-    }
-
-    public virtual void Destroy()
-    {
-        _worked = false;
-        TriggerOnDestroyEvent();
-    }
-
-    protected void TriggerOnSpawnEvent()
-    {
+    public void Spawn()
+    {        
+        WhenSpawn();
         if (onSpawn != null) onSpawn();
     }
 
-    protected void TriggerOnDestroyEvent()
+    public void Destroy()
     {
+        WhenDestory();
         if (onDestroy != null) onDestroy();
     }
+
+    protected virtual void WhenSpawn() { }
+
+    protected virtual void WhenDestory() { }
 
     protected void PauseFunctions()
     {
         foreach (var functionBehaviour in _functions)
         {
-            functionBehaviour.Pause();
+            functionBehaviour.pause = true;
         }
     }
 
@@ -50,7 +42,7 @@ public class Actor : MonoBehaviour
     {
         foreach (var functionBehaviour in _functions)
         {
-            functionBehaviour.Resume();
+            functionBehaviour.pause = false;
         }
     }
 

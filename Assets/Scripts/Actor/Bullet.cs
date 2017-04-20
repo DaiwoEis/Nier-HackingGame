@@ -7,19 +7,10 @@ public class Bullet : Actor
 
     protected override void Awake()
     {
-        base.Awake();
-
-        GameStateController.instance.GetState(GameStateType.Succeed).onEnter += () =>
-        {
-            if (_worked) Destroy();
-        };
-        GameStateController.instance.GetState(GameStateType.Failure).onEnter += () =>
-        {
-            if (_worked) Destroy();
-        };
+        base.Awake();        
 
         if (_destroyGO == null)
-            _destroyGO = gameObject;
+            _destroyGO = gameObject;        
     }
 
     private void Start()
@@ -27,32 +18,34 @@ public class Bullet : Actor
         Spawn();
     }
 
-    public override void Spawn()
+    protected override void WhenSpawn()
     {
-        base.Spawn();
+        base.WhenSpawn();
 
         ExecuteFunctions();
 
-        if (GameStateController.instance.currStateType == GameStateType.Paused)
+        if (GameStateController.instance.currStateType == GameStateType.Init)
+        {
             PauseFunctions();
+            GameStateController.instance.GetState(GameStateType.Running).onEnter += ResuneFunctions;
+        }
 
         GameStateController.instance.GetState(GameStateType.Paused).onEnter += PauseFunctions;
         GameStateController.instance.GetState(GameStateType.Paused).onExit += ResuneFunctions;
     }
 
-    public override void Destroy()
+    protected override void WhenDestory()
     {
-        base.Destroy();
+        base.WhenDestory();
 
         EndFunctions();
-
-        GameStateController gameStateController = GameStateController.instance;
-        if (gameStateController != null)
+       
+        if (GameStateController.instance != null)
         {
             GameStateController.instance.GetState(GameStateType.Paused).onEnter -= PauseFunctions;
             GameStateController.instance.GetState(GameStateType.Paused).onExit -= ResuneFunctions;
         }
 
-        Destroy(_destroyGO);
+        //Destroy(gameObject);
     }
 }

@@ -56,18 +56,20 @@ public class AIShootController : FunctionBehaviour
 
     private void SpawnPrefab()
     {
+        GameObject bulletPrefab = null;
+
         switch (_shootMethod)
         {
             case ShootMethod.Sequence:
-                Instantiate(_bulletPrefabs[_sequenceIndex], _shootPoint.position,
-                    _shootPoint.rotation);
+                bulletPrefab = _bulletPrefabs[_sequenceIndex];             
                 _sequenceIndex = (_sequenceIndex + 1)%_bulletPrefabs.Length;
                 break;
+
             case ShootMethod.Random:
-                Instantiate(_bulletPrefabs[Random.Range(0, _bulletPrefabs.Length)],
-                    _shootPoint.position,
-                    _shootPoint.rotation);
+                bulletPrefab = _bulletPrefabs[Random.Range(0, _bulletPrefabs.Length)];
                 break;
         }
+
+        Instantiate(bulletPrefab, _shootPoint.position, _shootPoint.rotation);
     }
 }

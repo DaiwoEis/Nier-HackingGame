@@ -24,6 +24,19 @@ public class FunctionBehaviour : MonoBehaviour
     [SerializeField]
     protected bool _pause = false;
 
+    public bool pause
+    {
+        get { return _pause; }
+        set
+        {
+            if (value && _pause == false)
+                OnPause();
+            else if (value == false && _pause)
+                OnResume();
+            _pause = value;
+        }
+    }
+
     public void Pause()
     {
         _pause = true;

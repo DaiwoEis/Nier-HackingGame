@@ -47,6 +47,7 @@ public class PlayerShootController : FunctionBehaviour
         {
             _audioSource.PlayOneShot(_shootSound);
         }
+
         Instantiate(_bulletPrefab, _shootPoint.position, _shootPoint.rotation);
     }
 }

@@ -1,19 +1,24 @@
 ﻿public class NoLifeActor : Actor
 {
-    protected override void Awake()
+    private void Start()
     {
-        base.Awake();
-
-        GameStateController.instance.onGameStart += Spawn;
+        Spawn();
     }
 
-    public override void Spawn()
+    protected override void WhenSpawn()
     {
-        base.Spawn();
+        base.WhenSpawn();
 
         ExecuteFunctions();
+
+        if (GameStateController.instance.currStateType != GameStateType.Running)
+        {
+            PauseFunctions();
+            GameStateController.instance.GetState(GameStateType.Running).onEnter += ResuneFunctions;
+        }
 
         GameStateController.instance.GetState(GameStateType.Paused).onEnter += PauseFunctions;
         GameStateController.instance.GetState(GameStateType.Paused).onExit += ResuneFunctions;
     }
+
 }

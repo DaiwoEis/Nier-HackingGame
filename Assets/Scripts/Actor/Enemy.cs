@@ -1,37 +1,25 @@
-﻿using UnityEngine;
-
-public class Enemy : Pawn 
+﻿public class Enemy : Pawn 
 {
     protected override void Awake()
     {
         base.Awake();
 
-        GameStateController.instance.onGameStart += Spawn;
-        GameStateController.instance.GetState(GameStateType.Failure).onEnter += PauseFunctions;
+        Spawn();        
     }
 
-    public override void Spawn()
-    {
-        base.Spawn();
+    //protected override void WhenSpawn()
+    //{
+    //    base.WhenSpawn();
 
-        ExecuteFunctions();
+    //    GameStateController.instance.GetState(GameStateType.Failure).onEnter += PauseFunctions;
+    //}
 
-        GameStateController.instance.GetState(GameStateType.Paused).onEnter += PauseFunctions;
-        GameStateController.instance.GetState(GameStateType.Paused).onExit += ResuneFunctions;
-    }
+    //protected override void WhenDeath()
+    //{
+    //    base.WhenDeath();
 
-    public override void Death()
-    {
-        base.Death();
+    //    if (GameStateController.instance == null) return;
 
-        GameStateController.instance.GetState(GameStateType.Paused).onEnter -= PauseFunctions;
-        GameStateController.instance.GetState(GameStateType.Paused).onExit -= ResuneFunctions;
-
-        EndFunctions();
-
-        foreach (var meshRenderer in GetComponentsInChildren<MeshRenderer>())
-        {
-            meshRenderer.enabled = false;
-        }
-    }
+    //    GameStateController.instance.GetState(GameStateType.Failure).onEnter -= PauseFunctions;
+    //}
 }

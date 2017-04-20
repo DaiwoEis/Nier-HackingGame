@@ -16,5 +16,6 @@ public class EnemyBulletBody : NoHealthBody
         base.Hit(hitter, hitResult);
 
         GetComponent<Actor>().Destroy();
+        Destroy(gameObject);
     }
 }

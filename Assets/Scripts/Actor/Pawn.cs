@@ -52,11 +52,6 @@ public class Pawn : Actor
         _audioSource = GetComponent<AudioSource>();
     }
 
-    protected void TriggerOnDeathEvent()
-    {
-        if (onDeath != null) onDeath();
-    }
-
     public void TakeDamage(Hitter hitter, HitResult hitResult)
     {
         if (_isDead || _isInvincible) return;        
@@ -73,19 +68,10 @@ public class Pawn : Actor
         }
     }
 
-    public override void Spawn()
-    {
-        TriggerOnSpawnEvent();
-
-        _currHealthAmount = _maxHealthAmount;
-        _isDead = false;
-    }
-
     protected void Hurt()
     {
         _isInvincible = true;
 
-        OnHurtEnter();
         if (onHurtEnter != null) onHurtEnter();
         _audioSource.PlayOneShot(_hurtClip);
         if (_spawnPrefabWhenHurt != null) Instantiate(_spawnPrefabWhenHurt, transform.position, transform.rotation);
@@ -93,40 +79,65 @@ public class Pawn : Actor
         CoroutineUtility.UStartCoroutine(_hurtTime, () =>
         {
             _isInvincible = false;
-            OnHurtExit();
             if (onHurtExit != null) onHurtExit();
         });
     }
 
-    protected virtual void OnHurtEnter()
+    public void Death()
     {
-        
-    }
-
-    protected virtual void OnHurtExit()
-    {
-        
-    }
-
-    public virtual void Death()
-    {
-        TriggerOnDeathEvent();
-
         _isDead = true;
+
+        if (onDeath != null) onDeath();
+
+        WhenDeath();
 
         _audioSource.PlayOneShot(_deathClip);
 
-        if (_spawnPrefabWhenDeath != null) Instantiate(_spawnPrefabWhenDeath, transform.position, transform.rotation);
-
-        CoroutineUtility.UStartCoroutine(_dealthTime, Destroy);       
+        if (_spawnPrefabWhenDeath != null) Instantiate(_spawnPrefabWhenDeath, transform.position, transform.rotation);     
     }
 
-    public override void Destroy()
+    protected override void WhenSpawn()
     {
-        _worked = false;
+        base.WhenSpawn();
 
-        TriggerOnDestroyEvent();
+        _currHealthAmount = _maxHealthAmount;
 
-        Destroy(gameObject);
+        _isDead = false;
+
+        ExecuteFunctions();
+
+        if (GameStateController.instance.currStateType != GameStateType.Running)
+        {
+            PauseFunctions();
+            GameStateController.instance.GetState(GameStateType.Running).onEnter += ResuneFunctions;
+        }
+
+        GameStateController.instance.GetState(GameStateType.Paused).onEnter += PauseFunctions;
+        GameStateController.instance.GetState(GameStateType.Paused).onExit += ResuneFunctions;
+    }
+
+
+    protected virtual void WhenDeath()
+    {
+        EndFunctions();
+
+        foreach (var meshRenderer in GetComponentsInChildren<MeshRenderer>())
+        {
+            meshRenderer.enabled = false;
+        }
+
+        CoroutineUtility.UStartCoroutine(_dealthTime, Destroy);
+
+        if (GameStateController.instance == null) return;
+
+        GameStateController.instance.GetState(GameStateType.Paused).onEnter -= PauseFunctions;
+        GameStateController.instance.GetState(GameStateType.Paused).onExit -= ResuneFunctions;
+    }
+
+    protected override void WhenDestory()
+    {
+        base.WhenDestory();
+
+        EndFunctions();
     }
 }

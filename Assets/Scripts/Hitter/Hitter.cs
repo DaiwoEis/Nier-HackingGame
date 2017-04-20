@@ -19,7 +19,7 @@ public class Hitter : FunctionBehaviour
 
     public HitType hitType { get { return _hitType; } }
 
-    public event Action OnHit = null;
+    public event Action onHit = null;
 
     private bool _hitObject = false;
 
@@ -34,14 +34,14 @@ public class Hitter : FunctionBehaviour
     {
         base.OnUpdate();
 
-        if (_hitObject && OnHit != null)
+        if (_hitObject && onHit != null)
         {
-            OnHit();
+            onHit();
             _hitObject = false;
         }            
     }
 
-    protected virtual void onHit(HitableBehaviour hitTarget)
+    protected virtual void WhenHit(HitableBehaviour hitTarget)
     {
         
     }
@@ -60,7 +60,7 @@ public class Hitter : FunctionBehaviour
             hitTarget.Hit(this, hitResult);
 
             _hitObject = true;
-            onHit(hitTarget);
+            WhenHit(hitTarget);
             //Debug.Log(gameObject.name + " hit " + other.gameObject.name);
         }
     }

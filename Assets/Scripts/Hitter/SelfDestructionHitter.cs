@@ -1,7 +1,13 @@
-﻿public class SelfDestructionHitter : Hitter 
+﻿using UnityEngine;
+
+public class SelfDestructionHitter : MonoBehaviour 
 {
     private void Awake()
     {
-        OnHit += GetComponent<Actor>().Destroy;
+        GetComponent<Hitter>().onHit += () =>
+        {
+            GetComponent<Actor>().Destroy();
+            Destroy(gameObject);
+        };
     }
 }

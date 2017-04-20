@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-public class TimeDestroyHitter : Hitter
+public class TimeDestroyHitter : MonoBehaviour
 {
     [SerializeField]
     private float _destroyTime = 0.5f;
@@ -9,6 +9,10 @@ public class TimeDestroyHitter : Hitter
 
     private void Start()
     {
-        CoroutineUtility.UStartCoroutine(_destroyTime, () => { GetComponent<Actor>().Destroy(); });
+        CoroutineUtility.UStartCoroutine(_destroyTime, () =>
+        {
+            GetComponent<Actor>().Destroy();
+            Destroy(gameObject);
+        });
     }
 }
