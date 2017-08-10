@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -11,29 +12,53 @@ public class GameStateController : MonoSingleton<GameStateController>
 
     private Dictionary<GameStateType, GameState> _states = new Dictionary<GameStateType, GameState>();
 
-    private bool _gameStarted = false;
-
     public event Action onGameStart = null;
 
-    protected override void Init()
-    {
-        base.Init();
+    public event Action onGamePaused = null;
 
-        foreach (var gameState in GetComponents<GameState>())
+    public event Action onGameResumed = null;
+
+    public event Action onGameSucced = null;
+
+    public event Action onGameFailure = null;
+
+    private void Awake()
+    { 
+        foreach (var gameState in GetComponentsInChildren<GameState>())
         {
-            gameState.Init();
+            gameState.Init(this);
             _states.Add(gameState.stateType, gameState);
         }
 
-        GetState(GameStateType.Running).onEnter += () =>
+        GetState(GameStateType.Running).onEnter += (lastState) =>
         {
-            if (_gameStarted == false && onGameStart != null)
-            {
+            if (lastState.stateType == GameStateType.Ready && onGameStart != null)
                 onGameStart();
-                _gameStarted = true;
-            }
         };
 
+        GetState(GameStateType.Paused).onEnter += (lastState) =>
+        {
+            if (onGamePaused != null) onGamePaused();
+        };
+        GetState(GameStateType.Paused).onExit += (nextState) =>
+        {
+            if (onGameResumed != null) onGameResumed();
+        };
+
+        GetState(GameStateType.Succeed).onEnter += (lastState) =>
+        {
+            if (onGameSucced != null) onGameSucced();
+        };
+
+        GetState(GameStateType.Failure).onEnter += (lastState) =>
+        {
+            if (onGameFailure != null) onGameFailure();
+        };
+    }
+
+    private IEnumerator Start()
+    {
+        yield return new WaitForEndOfFrame();
         ChangeState(GameStateType.Init);
     }
 
@@ -54,16 +79,19 @@ public class GameStateController : MonoSingleton<GameStateController>
 
     public void ChangeState(GameStateType nextStateType)
     {
-        if (_currState != null)
+        var lastState = _currState;
+        var nextState = _states[nextStateType];
+
+        if (lastState != null)
         {
-            _currState.OnExit();            
+            lastState.OnExit(nextState);            
         }
 
-        _currState = _states[nextStateType];
+        _currState = nextState;
 
-        if (_currState != null)
+        if (nextState != null)
         {
-            _currState.OnEnter();
+            nextState.OnEnter(lastState);
         }
     }
 }

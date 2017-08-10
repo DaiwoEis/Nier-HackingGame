@@ -1,57 +1,20 @@
 ﻿using System;
 using UnityEngine;
 
-[RequireComponent(typeof(Rigidbody))]
 public class Hitter : FunctionBehaviour
 {
     [SerializeField]
     protected int _damage = 1;
-
     public int damage { get { return _damage; } }
 
     [SerializeField]
     private HitterLayer _hitterLayer = default(HitterLayer);
-
+    
     public HitterLayer layer { get { return _hitterLayer; } }
-
-    [SerializeField]
-    private HitType _hitType = HitType.Weak;
-
-    public HitType hitType { get { return _hitType; } }
 
     public event Action onHit = null;
 
-    private bool _hitObject = false;
-
-    protected override void OnExecute()
-    {
-        base.OnExecute();
-
-        _hitObject = false;
-    }
-
-    protected override void OnUpdate()
-    {
-        base.OnUpdate();
-
-        if (_hitObject && onHit != null)
-        {
-            onHit();
-            _hitObject = false;
-        }            
-    }
-
-    protected virtual void WhenHit(HitableBehaviour hitTarget)
-    {
-        
-    }
-
-    protected override void onTriggerEnter(Collider other)
-    {
-        HitCheck(other);
-    }
-
-    private void HitCheck(Collider other)
+    protected void HitCheck(Collider other)
     {
         var hitTarget = other.GetComponent<HitableBehaviour>();
         if (hitTarget != null && hitTarget.CanHit(this))
@@ -59,8 +22,7 @@ public class Hitter : FunctionBehaviour
             var hitResult = GetHitResult(other);
             hitTarget.Hit(this, hitResult);
 
-            _hitObject = true;
-            WhenHit(hitTarget);
+            if (onHit != null) onHit();
             //Debug.Log(gameObject.name + " hit " + other.gameObject.name);
         }
     }
@@ -81,17 +43,19 @@ public class Hitter : FunctionBehaviour
         }
         return hitResult;
     }
+
+    protected override void OnEnd()
+    {
+        base.OnEnd();
+
+        onHit = null;
+    }
 }
 
 public enum HitterLayer
 {
-    Player = 1 << 0,
-    Enemy = 1 << 1,
-    Environment = 1 << 2
-}
-
-public enum HitType
-{
-    Weak = 1 << 0,
-    Strong = 1 << 1
+    PlayerBullet = 1 << 0,
+    EnemyOrangeBullet = 1 << 1,
+    EnemyPurpleBullet = 1 << 2,
+    ShockWave = 1 << 3
 }

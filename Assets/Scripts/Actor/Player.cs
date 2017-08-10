@@ -1,9 +1,17 @@
-﻿public class Player : Pawn
+﻿public class Player : Actor 
 {
-    protected override void Awake()
+    public override void OnSpawn()
     {
-        base.Awake();
+        base.OnSpawn();
 
-        Spawn();
+        GameStateController.instance.onGameStart += BeginFunctions;
+        GameStateController.instance.onGameSucced += EndFunctions;
+
+        var health = GetComponent<PawnHealth>();
+        health.onDeath += () =>
+        {
+            EndFunctions();
+            this.StartCoroutine(health.dealthTime, () => { ActorManager.instance.DestroyObject(gameObject); });
+        };
     }
 }

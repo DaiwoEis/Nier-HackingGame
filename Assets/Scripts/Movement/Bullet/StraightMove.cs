@@ -5,6 +5,9 @@ public class StraightMove : FunctionBehaviour
 {
     [SerializeField]
     private float _moveSpeed = 5f;
+
+    [HideInInspector]
+    public float moveSpeed { get { return _moveSpeed; } set { _moveSpeed = value; } }
     
     private Rigidbody _rigidbody = null;
 
@@ -16,9 +19,9 @@ public class StraightMove : FunctionBehaviour
         _rigidbody.useGravity = false;
     }
 
-    protected override void OnExecute()
+    protected override void OnBegin()
     {
-        base.OnExecute();
+        base.OnBegin();
 
         _rigidbody.velocity = transform.forward*_moveSpeed;
     }

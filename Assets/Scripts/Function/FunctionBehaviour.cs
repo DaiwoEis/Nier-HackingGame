@@ -1,17 +1,18 @@
-﻿using UnityEngine;
+﻿using FullInspector;
+using UnityEngine;
 
 public class FunctionBehaviour : MonoBehaviour 
 {
     [SerializeField]
     protected bool _running = false;
 
-    public void Execute()
+    public void Begin()
     {
         _running = true;
-        OnExecute();
+        OnBegin();
     }
 
-    protected virtual void OnExecute() { }
+    protected virtual void OnBegin() { }
 
     public void End()
     {
@@ -19,7 +20,10 @@ public class FunctionBehaviour : MonoBehaviour
         OnEnd();
     }
 
-    protected virtual void OnEnd() { }
+    protected virtual void OnEnd()
+    {
+        StopAllCoroutines();
+    }
 
     [SerializeField]
     protected bool _pause = false;
@@ -84,53 +88,53 @@ public class FunctionBehaviour : MonoBehaviour
     {
         if (_pause || !_running) return;
 
-        onTriggerEnter(other);
+        WhenTriggerEnter(other);
     }
 
-    protected virtual void onTriggerEnter(Collider other) { }
+    protected virtual void WhenTriggerEnter(Collider other) { }
 
     protected void OnTriggerStay(Collider other)
     {
         if (_pause || !_running) return;
 
-        onTriggerStay(other);
+        WhenTriggerStay(other);
     }
 
-    protected virtual void onTriggerStay(Collider other) { }
+    protected virtual void WhenTriggerStay(Collider other) { }
 
     protected void OnTriggerExit(Collider other)
     {
         if (_pause || !_running) return;
 
-        onTriggerExit(other);
+        WhenTriggerExit(other);
     }
 
-    protected virtual void onTriggerExit(Collider other) { }
+    protected virtual void WhenTriggerExit(Collider other) { }
 
     protected void OnCollisionEnter(Collision other)
     {
         if (_pause || !_running) return;
 
-        onCollisionEnter(other);
+        WhenCollisionEnter(other);
     }
 
-    protected virtual void onCollisionEnter(Collision other) { }
+    protected virtual void WhenCollisionEnter(Collision other) { }
 
     protected void OnCollisionStay(Collision other)
     {
         if (_pause || !_running) return;
 
-        onCollisionStay(other);
+        WhenCollisionStay(other);
     }
 
-    protected virtual void onCollisionStay(Collision other) { }
+    protected virtual void WhenCollisionStay(Collision other) { }
 
     protected void OnCollisionExit(Collision other)
     {
         if (_pause || !_running) return;
 
-        onCollisionExit(other);
+        WhenCollisionExit(other);
     }
 
-    protected virtual void onCollisionExit(Collision other) { }
+    protected virtual void WhenCollisionExit(Collision other) { }
 }

@@ -4,19 +4,19 @@ using UnityEngine;
 public class GameFailure : GameState
 {
     [SerializeField]
-    private BaseView _failureView = null;
+    private CWindow _failureWindow = null;
 
-    public override void Init()
+    public override void Init(GameStateController controller)
     {
-        base.Init();
+        base.Init(controller);
 
         _stateType = GameStateType.Failure;
     }
 
-    public override void OnEnter()
+    public override void OnEnter(GameState lastState)
     {
-        base.OnEnter();
+        base.OnEnter(lastState);
 
-        ViewController.instance.AddCommond(new OpenCommond(_failureView));
+        WindowController.instance.AddCommond(new OpenCommond(_failureWindow));
     }
 }

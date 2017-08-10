@@ -43,7 +43,7 @@ public class ControllerMoveAxis : MoveAxis
 {
     public override Vector3 Axis()
     {
-        return new Vector3(Input.GetAxisRaw("Horizontal"), 0f, Input.GetAxisRaw("Vertical"));
+        return new Vector3(Input.GetAxisRaw("LeftHorizontal"), 0f, Input.GetAxisRaw("LeftVertical"));
     }
 
     public override void Update()
@@ -58,7 +58,7 @@ public class MobileMoveAxis : MoveAxis
 
     public MobileMoveAxis()
     {
-        _scrollCircle = GameObject.FindWithTag("LeftMobileAxis").GetComponent<ScrollCircle>();
+        _scrollCircle = GameObject.FindWithTag(TagConfig.LeftMobileAxis).GetComponent<ScrollCircle>();
     }
 
     public override Vector3 Axis()

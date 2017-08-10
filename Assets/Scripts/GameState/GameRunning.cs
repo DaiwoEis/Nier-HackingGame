@@ -3,32 +3,42 @@
 public class GameRunning : GameState
 {
     [SerializeField]
-    private Pawn _boss = null;
+    private Actor _boss = null;
 
     [SerializeField]
-    private Pawn _player = null;
+    private Actor _player = null;
 
-    public override void Init()
+    public override void Init(GameStateController controller)
     {
-        base.Init();
+        base.Init(controller);
 
         _stateType = GameStateType.Running;
+    }
 
-        _boss.onDeath += () =>
-        {
-            if (_stateController.currState == this)
-            {
-                _stateController.ChangeState(GameStateType.Succeed);
-            }
-        };
+    public override void OnEnter(GameState lastState)
+    {
+        base.OnEnter(lastState);
 
-        _player.onDeath += () =>
-        {
-            if (_stateController.currState == this)
-            {
-                _stateController.ChangeState(GameStateType.Failure);
-            }
-        };
+        _boss.onDestroy += Succeed;
+        _player.onDestroy += Failure;
+    }
+
+    public override void OnExit(GameState nextState)
+    {
+        base.OnExit(nextState);
+
+        _boss.onDestroy -= Succeed;
+        _player.onDestroy -= Failure;
+    }
+
+    private void Succeed()
+    {
+        _stateController.ChangeState(GameStateType.Succeed);
+    }
+
+    private void Failure()
+    {
+        { _stateController.ChangeState(GameStateType.Failure); };
     }
 
     public override void OnUpdate()

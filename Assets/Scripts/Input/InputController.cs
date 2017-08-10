@@ -12,9 +12,10 @@ public class InputController : MonoSingleton<InputController>
 
     private Dictionary<Type, InputDevice> _devices = new Dictionary<Type, InputDevice>();
 
-    protected override void Init()
+    private void Awake()
     {
-#if !MOBILE_PLATFORM
+
+#if !Moblie_Platform
         _devices.Add(typeof(KeyboardDevice), new KeyboardDevice());
         _devices.Add(typeof(ControllerDevice), new ControllerDevice());
 #else
@@ -26,7 +27,7 @@ public class InputController : MonoSingleton<InputController>
             .Where(type => type.IsAbstract && type.GetInterfaces().Contains(typeof(IButton)))
             .Select(type => type.Name).ToArray();
 
-        string[] directionNames = Assembly.GetExecutingAssembly()
+        string[] axisNames = Assembly.GetExecutingAssembly()
             .GetTypes()
             .Where(type => type.IsAbstract && type.GetInterfaces().Contains(typeof(IAxis)))
             .Select(type => type.Name).ToArray();
@@ -34,10 +35,10 @@ public class InputController : MonoSingleton<InputController>
         foreach (var inputDevice in _devices.Values)
         {
             inputDevice.CreateButtons(buttonNames);
-            inputDevice.CreateAxises(directionNames);
+            inputDevice.CreateAxises(axisNames);
         }
 
-#if !MOBILE_PLATFORM
+#if !Moblie_Platform
         ChangeDevice<KeyboardDevice>();
 #else
         ChangeDevice<MobileDevice>();

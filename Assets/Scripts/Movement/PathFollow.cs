@@ -7,6 +7,9 @@ public class PathFollow : FunctionBehaviour
     private NavMeshAgent _navMeshAgent = null;
 
     [SerializeField]
+    private float _moveSpeed = 8f;
+
+    [SerializeField]
     private Transform[] _wayPoints = null;
 
     [SerializeField]
@@ -17,10 +20,14 @@ public class PathFollow : FunctionBehaviour
     [SerializeField]
     private float _arriveDistance = 0.5f;
 
+    private Vector3 _pausedVelocity = Vector3.zero;
+
     private void Awake()
     {
         _navMeshAgent = GetComponent<NavMeshAgent>();
         _navMeshAgent.updateRotation = _updateRotate;
+        _navMeshAgent.stoppingDistance = 0f;
+        _navMeshAgent.speed = _moveSpeed;
     }
 
     protected override void OnUpdate()
@@ -33,7 +40,7 @@ public class PathFollow : FunctionBehaviour
         }
     }
 
-    protected override void OnExecute()
+    protected override void OnBegin()
     {
         if (_navMeshAgent == null)
             _navMeshAgent = GetComponent<NavMeshAgent>();
@@ -45,6 +52,8 @@ public class PathFollow : FunctionBehaviour
     {
         base.OnPause();
 
+        _pausedVelocity = _navMeshAgent.velocity;
+        _navMeshAgent.velocity = Vector3.zero;
         _navMeshAgent.isStopped = true;
     }
 
@@ -52,6 +61,7 @@ public class PathFollow : FunctionBehaviour
     {
         base.OnResume();
 
+        _navMeshAgent.velocity = _pausedVelocity;
         _navMeshAgent.isStopped = false;
     }
 

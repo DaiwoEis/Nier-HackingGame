@@ -4,21 +4,21 @@ using UnityEngine;
 public class GameReady : GameState
 {
     [SerializeField]
-    private BaseView _readyView = null;
+    private CWindow _readyWindow = null;
 
-    public override void Init()
+    public override void Init(GameStateController controller)
     {
-        base.Init();
+        base.Init(controller);
 
         _stateType = GameStateType.Ready;
 
-        _readyView.onExit += () => _stateController.ChangeState(GameStateType.Running);
+        _readyWindow.onClosingComplete += () => _stateController.ChangeState(GameStateType.Running);
     }
 
-    public override void OnEnter()
+    public override void OnEnter(GameState lastState)
     {
-        base.OnEnter();
+        base.OnEnter(lastState);
 
-        ViewController.instance.AddCommond(new OpenCommond(_readyView));
+        WindowController.instance.AddCommond(new OpenCommond(_readyWindow));
     }
 }

@@ -25,8 +25,8 @@ public class KeyboardDevice : InputDevice
             Input.GetKey(KeyCode.Joystick1Button17) ||
             Input.GetKey(KeyCode.Joystick1Button18) ||
             Input.GetKey(KeyCode.Joystick1Button19) ||
-            Math.Abs(Input.GetAxis("Horizontal")) > 0.00001f ||
-            Math.Abs(Input.GetAxis("Vertical")) > 0.00001f ||
+            Math.Abs(Input.GetAxis("LeftHorizontal")) > 0.00001f ||
+            Math.Abs(Input.GetAxis("LeftVertical")) > 0.00001f ||
             Math.Abs(Input.GetAxis("Triggers")) > 0.00001f ||
             Math.Abs(Input.GetAxis("RightHorizontal")) > 0.00001f ||
             Math.Abs(Input.GetAxis("RightVertical")) > 0.00001f)

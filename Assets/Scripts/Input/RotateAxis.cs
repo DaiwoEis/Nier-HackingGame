@@ -21,7 +21,7 @@ public class KeyboardRotateAxis : RotateAxis
         if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hitInfo,
             1 << LayerMask.NameToLayer("Ground")))
         {
-            return PlaneUtility.Direction((hitInfo.point - _player.position));
+            return PlaneUtility.Direction(hitInfo.point - _player.position);
         }
 
         return Vector3.zero;

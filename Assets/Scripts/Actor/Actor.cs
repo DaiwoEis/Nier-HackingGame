@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 public abstract class Actor : MonoBehaviour
@@ -7,28 +8,60 @@ public abstract class Actor : MonoBehaviour
 
     public event Action onDestroy = null;
 
-    protected FunctionBehaviour[] _functions = null;
+    public bool spawned { get; protected set; }
+
+    public bool destroyed { get; protected set; }
+
+    [SerializeField]
+    private bool _isTemplate = false;
+    public bool isTemplate { get { return _isTemplate; } }
+
+    [SerializeField]
+    protected List<FunctionBehaviour> _functions = null;    
+
+    public virtual void OnSpawn()
+    {
+        //Debug.Log("Spawn " + gameObject.name);
+
+        spawned = true;
+        destroyed = false;
+        TriggerOnSpawnEvent();
+        
+        GameStateController.instance.onGamePaused += PauseFunctions;
+        GameStateController.instance.onGameResumed += ResuneFunctions;
+    }
+
+    public virtual void OnRelease()
+    {
+        //Debug.Log("Destroy " + gameObject.name);
+
+        spawned = false;
+        destroyed = true;
+        GameStateController.instance.onGamePaused -= PauseFunctions;
+        GameStateController.instance.onGameResumed -= ResuneFunctions;
+
+        StopAllCoroutines();
+
+        TriggerOnDestroyEvent();
+        onSpawn = null;
+        onDestroy = null;
+    }
 
     protected virtual void Awake()
     {
-        _functions = GetComponents<FunctionBehaviour>();
+        foreach (var function in GetComponentsInChildren<FunctionBehaviour>())
+            _functions.Add(function);
     }
 
-    public void Spawn()
-    {        
-        WhenSpawn();
+    public void TriggerOnSpawnEvent()
+    {
         if (onSpawn != null) onSpawn();
     }
 
-    public void Destroy()
+    public void TriggerOnDestroyEvent()
     {
-        WhenDestory();
         if (onDestroy != null) onDestroy();
     }
-
-    protected virtual void WhenSpawn() { }
-
-    protected virtual void WhenDestory() { }
 
     protected void PauseFunctions()
     {
@@ -46,11 +79,11 @@ public abstract class Actor : MonoBehaviour
         }
     }
 
-    protected void ExecuteFunctions()
+    protected void BeginFunctions()
     {
         foreach (var functionBehaviour in _functions)
         {
-            functionBehaviour.Execute();
+            functionBehaviour.Begin();
         }
     }
 
@@ -61,4 +94,13 @@ public abstract class Actor : MonoBehaviour
             functionBehaviour.End();
         }
     }
+
+    private void OnDrawGizmos()
+    {
+        Gizmos.color = Color.red;
+        Gizmos.DrawLine(transform.position + Vector3.up*0.5f, transform.position + Vector3.up * 0.5f + transform.forward*2f);
+        Gizmos.color = Color.blue;
+        Gizmos.DrawSphere(transform.position + Vector3.up * 0.5f + transform.forward * 2f, 0.3f);
+    }
+
 }

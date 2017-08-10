@@ -2,6 +2,8 @@
 // This is EnumFlagsAttributeDrawer.cs
 // This file needs to be placed in an "Editor" directory.
 // ---
+
+using FullInspector;
 using UnityEngine;
 using UnityEditor;
 

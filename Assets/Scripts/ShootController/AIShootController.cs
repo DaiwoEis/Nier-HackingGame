@@ -3,7 +3,7 @@
 public class AIShootController : FunctionBehaviour
 {
     [SerializeField]
-    private float _shootIntetval = 1f;
+    private float _shootCoolDownTime = 1f;
 
     [SerializeField]
     private GameObject[] _bulletPrefabs = null;
@@ -17,41 +17,30 @@ public class AIShootController : FunctionBehaviour
     [SerializeField]
     private AudioClip _shootSound = null;
 
+    [SerializeField]
     private AudioSource _audioSource = null;
 
     private int _sequenceIndex = 0;
 
-    private float _timer = 0f;
-
-    public enum ShootMethod
-    {
-        Sequence,
-        Random
-    }
-
-    public bool running { get; set; }
-
-    private void Awake()
-    {
-        _audioSource = _shootPoint.GetComponent<AudioSource>();
-    }
-
-    protected override void OnExecute()
-    {
-        _timer = _shootIntetval;
-    }
+    private bool _isCoolDown = false;
 
     protected override void OnUpdate()
     {
         base.OnUpdate();
-
-        _timer += Time.deltaTime;
-        if (_timer >= _shootIntetval)
+        if (_isCoolDown == false)
         {
-            SpawnPrefab();
-            if (_shootPoint != null) _audioSource.PlayOneShot(_shootSound);
-            _timer = 0f;
+            Shoot();
         }
+    }
+
+    private void Shoot()
+    {
+        if (_shootPoint != null && !_audioSource.isPlaying) _audioSource.PlayOneShot(_shootSound);
+
+        SpawnPrefab();
+
+        _isCoolDown = true;
+        this.StartCoroutine(_shootCoolDownTime, () => _isCoolDown = false);
     }
 
     private void SpawnPrefab()
@@ -70,6 +59,12 @@ public class AIShootController : FunctionBehaviour
                 break;
         }
 
-        Instantiate(bulletPrefab, _shootPoint.position, _shootPoint.rotation);
+        ActorManager.instance.CreateObject(bulletPrefab, _shootPoint.position, _shootPoint.rotation);
     }
+}
+
+public enum ShootMethod
+{
+    Sequence,
+    Random
 }

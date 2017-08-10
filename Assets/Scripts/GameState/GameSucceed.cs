@@ -4,19 +4,19 @@ using UnityEngine;
 public class GameSucceed : GameState
 {
     [SerializeField]
-    private BaseView _succeedView = null;
+    private CWindow _succeedWindow = null;
 
-    public override void Init()
+    public override void Init(GameStateController controller)
     {
-        base.Init();
+        base.Init(controller);
 
         _stateType = GameStateType.Succeed;
     }
 
-    public override void OnEnter()
+    public override void OnEnter(GameState lastState)
     {
-        base.OnEnter();
+        base.OnEnter(lastState);
 
-        ViewController.instance.AddCommond(new OpenCommond(_succeedView));
+        WindowController.instance.AddCommond(new OpenCommond(_succeedWindow));
     }
 }

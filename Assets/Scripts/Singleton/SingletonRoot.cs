@@ -7,13 +7,16 @@ public class SingletonRoot : MonoBehaviour
     [SerializeField]
     private TextAsset _singletonConfig = null;
 
+    [SerializeField]
+    private string[] _singletonNames = null;
+
     private string CREATE = "Create";
 
     private string DESTROY = "Destroy";
 
     private void Awake()
     {
-        string[] singletonNames = _singletonConfig.text.Split(',');
+        string[] singletonNames = _singletonConfig != null ? _singletonConfig.text.Split(',') : _singletonNames;
         for (int i = 0; i < singletonNames.Length; i++)
         {
             InvokeMethod(ref CREATE, singletonNames, i);
@@ -22,7 +25,7 @@ public class SingletonRoot : MonoBehaviour
 
     private void OnDestroy()
     {
-        string[] singletonNames = _singletonConfig.text.Split(',');
+        string[] singletonNames = _singletonConfig != null ? _singletonConfig.text.Split(',') : _singletonNames;
         for (int i = singletonNames.Length - 1; i >= 0; --i)
         {
             InvokeMethod(ref DESTROY, singletonNames, i);

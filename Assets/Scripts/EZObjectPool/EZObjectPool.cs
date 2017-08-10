@@ -16,23 +16,25 @@ namespace EZObjectPools
         private GameObject _template;
         
         [SerializeField]
-        private string _poolName;
-
-        private List<GameObject> _objectList = null;
-
-        private List<GameObject> _availableObjects = null;
+        private string _poolName;       
 
         [SerializeField]
         private bool _autoResize = true;
 
         [SerializeField]
-        private int _poolSize = 100;
+        private int _poolSize = 50;
 
         [SerializeField]
         private bool _instantiateOnAwake = false;
 
         [SerializeField]
         private bool _shared = false;
+
+        [SerializeField]
+        private List<GameObject> _objectList = null;
+
+        [SerializeField]
+        private List<GameObject> _availableObjects = null;
 
         public static GameObject marker
         {
@@ -68,53 +70,33 @@ namespace EZObjectPools
 
         public static EZObjectPool CreateObjectPool(GameObject template, string name, int size = 50, bool autoResize = true, bool instantiateImmediate = true, bool shared = false)
         {
-            if (shared)
-            {
-                if (_sharedPools.ContainsKey(name))
-                    return _sharedPools[name];
+            if (shared && _sharedPools.ContainsKey(name))
+                return _sharedPools[name];
 
-                GameObject go = new GameObject(name);
-                go.transform.parent = marker.transform;
-                EZObjectPool pool = go.AddComponent<EZObjectPool>();
-                pool._instantiateOnAwake = false;
-                pool._template = template;
-                pool._poolSize = size;
-                pool._poolName = name;
-                pool._autoResize = autoResize;
-                pool._objectList = new List<GameObject>(size);
-                pool._availableObjects = new List<GameObject>(size);
+            GameObject go = new GameObject(name);
+            go.transform.parent = marker.transform;
+            EZObjectPool pool = go.AddComponent<EZObjectPool>();
+            pool._instantiateOnAwake = false;
+            pool._template = template;
+            pool._poolSize = size;
+            pool._poolName = name;
+            pool._autoResize = autoResize;
+            pool._objectList = new List<GameObject>(size);
+            pool._availableObjects = new List<GameObject>(size);
 
+            if (instantiateImmediate)
+                pool.InstantiatePool();
+
+            if(shared)
                 _sharedPools.Add(name, pool);
 
-                if (instantiateImmediate)
-                    pool.InstantiatePool();
-
-                return pool;
-            }
-            else
-            {
-                GameObject go = new GameObject(name);
-                go.transform.parent = marker.transform;
-                EZObjectPool pool = go.AddComponent<EZObjectPool>();
-                pool._instantiateOnAwake = false;
-                pool._template = template;
-                pool._poolSize = size;
-                pool._poolName = name;
-                pool._autoResize = autoResize;
-                pool._objectList = new List<GameObject>(size);
-                pool._availableObjects = new List<GameObject>(size);
-
-                if (instantiateImmediate)
-                    pool.InstantiatePool();
-
-                return pool;
-            }
+            return pool;
         }
 
         public static EZObjectPool CreateSharedPool(GameObject template, string name, int size = 50,
             bool autoResize = true, bool instantiateImmediate = true)
         {
-            return CreateObjectPool(template, name, size, autoResize: autoResize, instantiateImmediate: instantiateImmediate, shared: true);
+            return CreateObjectPool(template, name, size, autoResize, instantiateImmediate, true);
         }
 
         public static EZObjectPool GetPoolByName(string name)
@@ -123,7 +105,14 @@ namespace EZObjectPools
             return poolGO == null ? null : poolGO.GetComponent<EZObjectPool>();
         }
 
-        private void InstantiatePool()
+        public static EZObjectPool GetSharedPool(string name)
+        {
+            if (_sharedPools.ContainsKey(name))
+                return _sharedPools[name];
+            return null;
+        }
+
+        public void InstantiatePool()
         {
             if (_template == null)
             {
@@ -137,8 +126,8 @@ namespace EZObjectPools
             {
                 GameObject go = NewActiveObject();
                 _objectList.Add(go);
-                go.SetActive(false);
                 AddToAvailableObjects(go);
+                go.SetActive(false);
             }
         }
 

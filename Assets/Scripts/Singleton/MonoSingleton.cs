@@ -17,17 +17,23 @@ public abstract class MonoSingleton<T> : MonoBehaviour where T : MonoSingleton<T
                 _instance = new GameObject(typeof(T).ToString()).AddComponent<T>();
             }
 
-            _instance.Init();
+            _instance.OnCreate();
         }
     }
 
-    public static void Destroy()
+    public static void Release()
     {
+        _instance.OnRelease();
         _instance = null;
     }
 
-    protected virtual void Init()
+    protected virtual void OnCreate()
     {
-        
+        //Debug.Log("Create " + instance.gameObject.name);
+    }
+
+    protected virtual void OnRelease()
+    {
+        //Debug.Log("Release " + instance.gameObject.name);
     }
 }

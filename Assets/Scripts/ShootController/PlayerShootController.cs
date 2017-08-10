@@ -9,45 +9,43 @@ public class PlayerShootController : FunctionBehaviour
     private Transform _shootPoint = null;
 
     [SerializeField]
-    private float _shootInterval = 0.5f;
+    private float _shootCoolDownTime = 0.5f;
 
     [SerializeField]
     private AudioClip _shootSound = null;
 
     private AudioSource _audioSource = null;
 
-    private float _timer = 0f;
+    private bool _isCoolDown = false;
 
-    private void Awake()
+    public void Awake()
     {
         _audioSource = _shootPoint.GetComponent<AudioSource>();
     }
 
-    protected override void OnExecute()
+    protected override void OnBegin()
     {
-        base.OnExecute();
+        base.OnBegin();
 
-        _timer = _shootInterval;
+        _isCoolDown = false;
     }
 
     protected override void OnUpdate()
     {
-        if (InputController.instance.GetButtonHold<ShootButton>() && _timer >= _shootInterval)
+        if (InputController.instance.GetButtonHold<ShootButton>() && _isCoolDown == false)
         {
             Shoot();
-            _timer = 0f;
         }
-
-        _timer += Time.deltaTime;
     }
 
     private void Shoot()
     {
         if (_shootSound != null)
-        {
             _audioSource.PlayOneShot(_shootSound);
-        }
 
-        Instantiate(_bulletPrefab, _shootPoint.position, _shootPoint.rotation);
+        ActorManager.instance.CreateObject(_bulletPrefab, _shootPoint.position, _shootPoint.rotation);
+
+        _isCoolDown = true;
+        this.StartCoroutine(_shootCoolDownTime, () => _isCoolDown = false);
     }
 }

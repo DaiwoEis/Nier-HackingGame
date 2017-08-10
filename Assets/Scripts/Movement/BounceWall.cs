@@ -8,41 +8,54 @@ public class BounceWall : FunctionBehaviour
     [SerializeField]
     private float _moveSpeed = 10f;
 
+    private Vector3 _moveDirection = Vector3.zero;
+
     private void Awake()
     {
         _rigidbody = GetComponent<Rigidbody>();
     }
 
-    private void Start() { }
-
-    protected override void OnExecute()
+    protected override void OnBegin()
     {
-        base.OnExecute();
+        base.OnBegin();
 
-        _rigidbody.velocity = transform.forward*_moveSpeed;
+        _moveDirection = transform.forward;
     }
 
     protected override void OnFixedUpdate()
     {
         base.OnFixedUpdate();
 
-        _rigidbody.velocity = transform.forward*_moveSpeed;
+        _rigidbody.velocity = _moveDirection*_moveSpeed;
     }
 
-    protected override void onCollisionEnter(Collision other)
+    protected override void OnPause()
+    {
+        base.OnPause();
+
+        _rigidbody.velocity = Vector3.zero;
+    }
+
+    protected override void OnEnd()
+    {
+        base.OnEnd();
+
+        _rigidbody.velocity = Vector3.zero;
+    }
+
+    protected override void WhenCollisionEnter(Collision other)
     {
         if (other.collider.CompareTag(TagConfig.Wall))
         {
             RaycastHit hitInfo;
-            if (Physics.Raycast(transform.position, transform.forward, out hitInfo, transform.lossyScale.x + 0.1f))
+            if (Physics.Raycast(transform.position, _moveDirection, out hitInfo, transform.lossyScale.x + 0.1f))
             {
-                transform.forward = Vector3.Reflect(transform.forward, hitInfo.normal);
+                _moveDirection = Vector3.Reflect(_moveDirection, hitInfo.normal);
             }
             else
             {
-                transform.forward = -transform.forward;
+                _moveDirection = -_moveDirection;
             }
-            _rigidbody.velocity = transform.forward*_moveSpeed;
         }
     }
 }

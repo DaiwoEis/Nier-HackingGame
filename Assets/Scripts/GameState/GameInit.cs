@@ -1,31 +1,19 @@
-﻿using System.Collections;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class GameInit : GameState
 {
-    [SerializeField]
-    private GameObject _blackScreenPanel = null;
-
-    public override void Init()
+    public override void Init(GameStateController controller)
     {
-        base.Init();
+        base.Init(controller);
 
         _stateType = GameStateType.Init;
     }
 
-    public override void OnEnter()
+    public override void OnEnter(GameState lastState)
     {
-        base.OnEnter();
+        base.OnEnter(lastState);
 
-        StartCoroutine(_Init());
-    }
-
-    private IEnumerator _Init()
-    {
-        _blackScreenPanel.SetActive(true);
-        yield return new WaitForEndOfFrame();
-        _blackScreenPanel.SetActive(false);
-        SceneChangeEffect effect=Camera.main.GetComponent<SceneChangeEffect>();
+        SceneChangeEffect effect = Camera.main.GetComponent<SceneChangeEffect>();
         if (effect != null)
         {
             effect.RunReverse(() => _stateController.ChangeState(GameStateType.Ready));
@@ -33,6 +21,6 @@ public class GameInit : GameState
         else
         {
             _stateController.ChangeState(GameStateType.Ready);
-        }            
+        }
     }
 }

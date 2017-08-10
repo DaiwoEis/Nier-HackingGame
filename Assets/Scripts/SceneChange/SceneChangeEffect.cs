@@ -10,12 +10,7 @@ public class SceneChangeEffect : MonoBehaviour
     private bool _start = false;
 
     [SerializeField]
-    private float _effecTime = 2f;
-
-    private void Awake()
-    {
-        
-    }
+    private float _effectTime = 2f;
 
     private void OnRenderImage(RenderTexture src, RenderTexture dst)
     {
@@ -43,9 +38,9 @@ public class SceneChangeEffect : MonoBehaviour
     {
         _start = true;
         float timer = 0f;
-        while (timer < _effecTime)
+        while (timer < _effectTime)
         {
-            _effectMaterial.SetFloat("_Magnitude", timer/_effecTime*0.5f);
+            _effectMaterial.SetFloat("_Magnitude", timer/_effectTime*0.5f);
             yield return null;
             timer += Time.unscaledDeltaTime;
         }
@@ -56,9 +51,9 @@ public class SceneChangeEffect : MonoBehaviour
     {
         _start = true;
         float timer = 0f;
-        while (timer < _effecTime)
+        while (timer < _effectTime)
         {
-            _effectMaterial.SetFloat("_Magnitude", 1f - timer/_effecTime);
+            _effectMaterial.SetFloat("_Magnitude", 1f - timer/_effectTime);
             yield return null;
             timer += Time.unscaledDeltaTime;
         }

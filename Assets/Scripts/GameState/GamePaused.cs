@@ -4,34 +4,28 @@ using UnityEngine;
 public class GamePaused : GameState
 {
     [SerializeField]
-    private BaseView _pausedView = null;
+    private CWindow _pausedWindow = null;
 
-    public override void Init()
+    public override void Init(GameStateController controller)
     {
-        base.Init();
+        base.Init(controller);
 
         _stateType = GameStateType.Paused;
 
-        _pausedView.onExit += () =>
-        {
-            if (_stateController.currState == this)
-            {
-                _stateController.ChangeState(GameStateType.Running);
-            }
-        };
+        _pausedWindow.onClosed += () => { _stateController.ChangeState(GameStateType.Running); };
     }
 
-    public override void OnEnter()
+    public override void OnEnter(GameState lastState)
     {
-        base.OnEnter();
+        base.OnEnter(lastState);
 
-        ViewController.instance.AddCommond(new OpenCommond(_pausedView));
         Time.timeScale = 0f;
+        WindowController.instance.AddCommond(new OpenCommond(_pausedWindow));
     }
 
-    public override void OnExit()
+    public override void OnExit(GameState nextState)
     {
-        base.OnExit();
+        base.OnExit(nextState);
 
         Time.timeScale = 1f;
     }
