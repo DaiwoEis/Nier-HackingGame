@@ -21,6 +21,9 @@ public class PawnHealth : HitableBehaviour
     private GameObject _spawnPrefabWhenHurt = null;
 
     [SerializeField]
+    private bool _spawnPrefabWhenHurtinLocal = true;
+
+    [SerializeField]
     private float _dealthTime = 0.1f;
     public float dealthTime { get { return _dealthTime; } }
 
@@ -30,9 +33,13 @@ public class PawnHealth : HitableBehaviour
     [SerializeField]
     private GameObject _spawnPrefabWhenDeath = null;
 
+    [SerializeField]
+    private bool _spawnPrefabWhenDeathInLocal = false;
+
     private bool _isDead = false;
     public bool isDead { get { return _isDead; } }
 
+    [SerializeField]
     private bool _isInvincible = false;
     public bool isInvincible { get { return _isInvincible; } }
 
@@ -83,7 +90,10 @@ public class PawnHealth : HitableBehaviour
 
         _audioSource.PlayOneShot(_hurtClip);
         if (_spawnPrefabWhenHurt != null)
-            ActorManager.instance.CreateObject(_spawnPrefabWhenHurt, transform.position, transform.rotation);
+        {
+            GameObject newGO = ActorManager.instance.CreateObject(_spawnPrefabWhenHurt, transform.position, transform.rotation);
+            if (_spawnPrefabWhenHurtinLocal) newGO.transform.SetParent(transform);
+        }
 
         this.StartCoroutine(_hurtTime, () => _isInvincible = false);
     }
@@ -101,7 +111,11 @@ public class PawnHealth : HitableBehaviour
 
         _audioSource.PlayOneShot(_deathClip);
 
-        if (_spawnPrefabWhenDeath != null) Instantiate(_spawnPrefabWhenDeath, transform.position, transform.rotation);     
+        if (_spawnPrefabWhenDeath != null)
+        {            
+            GameObject newGO = ActorManager.instance.CreateObject(_spawnPrefabWhenDeath, transform.position, transform.rotation);
+            if (_spawnPrefabWhenDeathInLocal) newGO.transform.SetParent(transform);
+        }   
     }
 
     public override void Hit(Hitter hitter, HitResult hitResult)
