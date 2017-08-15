@@ -26,7 +26,8 @@ public class OpenCommond : UICommond
         }
 
         windowStack.Push(_nextWindow);
-        yield return WindowController.instance.StartCoroutine(_nextWindow._Open());
+        //yield return WindowController.instance.StartCoroutine(_nextWindow._Open());
+        yield return _nextWindow._Open();
     }
 }
 
@@ -38,14 +39,16 @@ public class CloseCommond : UICommond
         if (windowStack.Count != 0)
         {
             CWindow curView = windowStack.Peek();
-            yield return WindowController.instance.StartCoroutine(curView._Close());
+            //yield return WindowController.instance.StartCoroutine();
+            yield return curView._Close();
             windowStack.Pop();
         }
 
         if (windowStack.Count != 0)
         {
             CWindow lastView = windowStack.Peek();
-            yield return WindowController.instance.StartCoroutine(lastView._Resume());
+            //yield return WindowController.instance.StartCoroutine(lastView._Resume());
+            yield return lastView._Resume();
         }
     }
 }
@@ -57,7 +60,8 @@ public class PauseCommond : UICommond
         if (windowStack.Count != 0)
         {
             CWindow curView = windowStack.Peek();
-            yield return WindowController.instance.StartCoroutine(curView._Pause());
+            //yield return WindowController.instance.StartCoroutine(curView._Pause());
+            yield return curView._Pause();
         }
     }
 }
@@ -69,7 +73,8 @@ public class CloseAllCommond : UICommond
         if (windowStack.Count != 0)
         {
             CWindow curView = windowStack.Peek();
-            yield return WindowController.instance.StartCoroutine(curView._Close());
+            //yield return WindowController.instance.StartCoroutine(curView._Close());
+            yield return curView._Close();
             windowStack.Pop();
         }
         windowStack.Clear();
@@ -100,13 +105,17 @@ public class WindowController : MonoSingleton<WindowController>
 
         _windowStack = new Stack<CWindow>();
         _uiCommonds = new Queue<UICommond>();
+    }
+
+    public void Run()
+    {
         _checkCommondCoroutine = StartCoroutine(_CheckCommond());
     }
 
-    protected override void OnRelease()
+    protected override IEnumerator _OnRelease()
     {
-        base.OnRelease();
-
+        yield return base._OnRelease();
+        _windowStack.Clear();
         if (_checkCommondCoroutine != null)
             StopCoroutine(_checkCommondCoroutine);
     }

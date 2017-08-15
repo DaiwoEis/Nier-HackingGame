@@ -5,11 +5,11 @@ public class PawnHealth : HitableBehaviour
 {
     [SerializeField]
     protected int _maxHealthAmount = 100;
+    public int maxHealthAmount { get { return _maxHealthAmount; } }
 
     [SerializeField]
     protected int _currHealthAmount = 0;
-
-    public int currHealthAmount { get { return _currHealthAmount; } }
+    public int currHealthAmount { get { return _currHealthAmount; } set { _currHealthAmount = value; } }
 
     [SerializeField]
     private float _hurtTime = 0f;
@@ -91,7 +91,7 @@ public class PawnHealth : HitableBehaviour
     public void Death()
     {
         _isDead = true;
-
+     
         if (onDeath != null) onDeath();
 
         foreach (var meshRenderer in GetComponentsInChildren<MeshRenderer>())
@@ -107,5 +107,7 @@ public class PawnHealth : HitableBehaviour
     public override void Hit(Hitter hitter, HitResult hitResult)
     {
         TakeDamage(hitter, hitResult);
+
+        base.Hit(hitter, hitResult);
     }
 }

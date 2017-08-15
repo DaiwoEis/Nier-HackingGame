@@ -1,6 +1,4 @@
-﻿using UnityEngine;
-
-public class PlayerBullet : Actor
+﻿public class PlayerBullet : Actor
 {
 
     public override void OnSpawn()

@@ -14,14 +14,16 @@ public class SceneChangeEffect : MonoBehaviour
 
     private void OnRenderImage(RenderTexture src, RenderTexture dst)
     {
-        if (_start)
-        {
-            Graphics.Blit(src, dst, _effectMaterial);
-        }
-        else
-        {
-            Graphics.Blit(src, dst);
-        }          
+
+        Graphics.Blit(src, dst, _effectMaterial);
+        //if (_start)
+        //{
+        //    Graphics.Blit(src, dst, _effectMaterial);
+        //}
+        //else
+        //{
+        //    Graphics.Blit(src, dst);
+        //}          
     }
 
     public void Run(Action onComplete = null)
@@ -37,6 +39,7 @@ public class SceneChangeEffect : MonoBehaviour
     private IEnumerator _Run(Action onComplete = null)
     {
         _start = true;
+        enabled = true;
         float timer = 0f;
         while (timer < _effectTime)
         {
@@ -45,10 +48,13 @@ public class SceneChangeEffect : MonoBehaviour
             timer += Time.unscaledDeltaTime;
         }
         if (onComplete != null) onComplete();
+        _start = false;
+        enabled = false;
     }
 
     private IEnumerator _RunReverse(Action onComplete = null)
     {
+        enabled = true;
         _start = true;
         float timer = 0f;
         while (timer < _effectTime)
@@ -57,7 +63,8 @@ public class SceneChangeEffect : MonoBehaviour
             yield return null;
             timer += Time.unscaledDeltaTime;
         }
-        _start = false;
         if (onComplete != null) onComplete();
+        _start = false;
+        enabled = false;
     }
 }

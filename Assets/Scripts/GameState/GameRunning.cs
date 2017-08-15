@@ -2,10 +2,8 @@
 
 public class GameRunning : GameState
 {
-    [SerializeField]
     private Actor _boss = null;
 
-    [SerializeField]
     private Actor _player = null;
 
     public override void Init(GameStateController controller)
@@ -13,6 +11,8 @@ public class GameRunning : GameState
         base.Init(controller);
 
         _stateType = GameStateType.Running;
+        _player = GameObject.Find(TagConfig.Player).GetComponent<Actor>();
+        _boss = GameObject.Find(TagConfig.Boss).GetComponent<Actor>();
     }
 
     public override void OnEnter(GameState lastState)
@@ -38,7 +38,7 @@ public class GameRunning : GameState
 
     private void Failure()
     {
-        { _stateController.ChangeState(GameStateType.Failure); };
+        _stateController.ChangeState(GameStateType.Failure);
     }
 
     public override void OnUpdate()

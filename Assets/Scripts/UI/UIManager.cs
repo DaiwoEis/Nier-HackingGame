@@ -1,19 +1,45 @@
-﻿using CUI;
+﻿using System.Collections;
+using CUI;
 using UnityEngine;
 
 public class UIManager : MonoSingleton<UIManager>
 {
     private AudioSource _audioSource = null;
 
-    private void Awake()
+    protected override void OnCreate()
     {
+        base.OnCreate();
+
         _audioSource = GetComponent<AudioSource>();
+    }
+
+    protected override IEnumerator _OnRelease()
+    {
+        yield return base._OnRelease();
+
+        while (true)
+        {
+            if (_audioSource.isPlaying)
+                yield return null;
+            else
+                break;
+        }
     }
 
     public void PlaySound(AudioClip sound)
     {
         if (sound == null) return;
         _audioSource.PlayOneShot(sound);
+    }
+
+    public void SetAnimationVersonZero(CWindow window)
+    {
+        window.SetAnimationVersion(0);
+    }
+
+    public void SetAnimationVersonOne(CWindow window)
+    {
+        window.SetAnimationVersion(1);
     }
 
     public void AddOpenCommend(CWindow nextView)
@@ -43,12 +69,12 @@ public class UIManager : MonoSingleton<UIManager>
 
     public void LoadCurrentScene()
     {
-        FindObjectOfType<GameRoot>().LoadCurrentScene();
+        FindObjectOfType<GameRoot>().LoadCurrentLevel();
     }
 
     public void LoadNextScene()
     {
-        FindObjectOfType<GameRoot>().LoadNextScene();
+        FindObjectOfType<GameRoot>().LoadNextLevel();
     }
 
     public void LoadMainMenuScene()

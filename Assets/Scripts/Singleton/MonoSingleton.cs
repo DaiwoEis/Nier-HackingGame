@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using UnityEngine;
 
 public abstract class MonoSingleton<T> : MonoBehaviour where T : MonoSingleton<T>
 {
@@ -21,9 +22,10 @@ public abstract class MonoSingleton<T> : MonoBehaviour where T : MonoSingleton<T
         }
     }
 
-    public static void Release()
+
+    public static IEnumerator _Release()
     {
-        _instance.OnRelease();
+        yield return _instance._OnRelease();
         _instance = null;
     }
 
@@ -32,8 +34,9 @@ public abstract class MonoSingleton<T> : MonoBehaviour where T : MonoSingleton<T
         //Debug.Log("Create " + instance.gameObject.name);
     }
 
-    protected virtual void OnRelease()
+    protected virtual IEnumerator _OnRelease()
     {
         //Debug.Log("Release " + instance.gameObject.name);
+        yield break;
     }
 }

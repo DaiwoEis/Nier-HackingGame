@@ -34,6 +34,13 @@ public abstract class GameState : MonoBehaviour
     {
         if (onUpdate != null) onUpdate();
     }
+
+#if UNITY_EDITOR
+    public virtual void Setup()
+    {
+        
+    }
+#endif
 }
 
 public enum GameStateType

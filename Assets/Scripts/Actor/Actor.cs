@@ -21,8 +21,9 @@ public abstract class Actor : MonoBehaviour
 
     public virtual void OnSpawn()
     {
-        //Debug.Log("Spawn " + gameObject.name);
-
+#if DEBUG_SCRIPT
+        Debug.Log("Spawn " + gameObject.name);
+#endif        
         spawned = true;
         destroyed = false;
         TriggerOnSpawnEvent();
@@ -33,8 +34,9 @@ public abstract class Actor : MonoBehaviour
 
     public virtual void OnRelease()
     {
-        //Debug.Log("Destroy " + gameObject.name);
-
+#if DEBUG_SCRIPT
+        Debug.Log("Destroy " + gameObject.name);        
+#endif
         spawned = false;
         destroyed = true;
         GameStateController.instance.onGamePaused -= PauseFunctions;

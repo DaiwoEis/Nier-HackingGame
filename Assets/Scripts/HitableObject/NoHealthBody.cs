@@ -17,6 +17,8 @@ public class NoHealthBody : HitableBehaviour
 
     public override void Hit(Hitter hitter, HitResult hitResult)
     {
+        base.Hit(hitter, hitResult);
+
         if (_hittedSound != null)
         {
             _audioSource.PlayOneShot(_hittedSound);

@@ -12,8 +12,9 @@ public class InputController : MonoSingleton<InputController>
 
     private Dictionary<Type, InputDevice> _devices = new Dictionary<Type, InputDevice>();
 
-    private void Awake()
+    protected override void OnCreate()
     {
+        base.OnCreate();
 
 #if !Moblie_Platform
         _devices.Add(typeof(KeyboardDevice), new KeyboardDevice());

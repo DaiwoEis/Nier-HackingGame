@@ -1,5 +1,4 @@
-﻿using UnityEngine;
-using UnityEngine.SceneManagement;
+﻿using UnityEngine.SceneManagement;
 
 public class CSceneManager 
 {
@@ -7,30 +6,23 @@ public class CSceneManager
 
     public static readonly string MainMenuScene = "Main Menu";
 
-    public static string CurrentScene
-    {
-        get { return SceneManager.GetActiveScene().name; }
-    }
+    public static string CurrentScene { get { return SceneManager.GetActiveScene().name; } }
 
     public static string NextScene = "";
 
-    public static string GetNextSceneName(string sceneName)
+    public static int GetSceneNumberByName(string sceneName)
     {
-        string nextSceneName = "Level";
-        int nextSceneNum = SceneManager.GetSceneByName(sceneName).buildIndex;
-        nextSceneNum += 1;
-        if (nextSceneNum > SceneManager.sceneCountInBuildSettings - 2)
-            nextSceneNum = 0;
-        if (nextSceneNum < 10)
-            nextSceneName += " 0" + nextSceneNum;
-        else
-            nextSceneName += " " + nextSceneNum;
-        Debug.Log(nextSceneNum+" "+nextSceneName);
-        return nextSceneName;
+        return SceneManager.GetSceneByName(sceneName).buildIndex;
+    }
+
+    public static string GetSceneNameByNumber(int sceneNumber)
+    {
+        return SceneManager.GetSceneByBuildIndex(0).name;
     }
 
     public static void LoadScene(string nextScene)
     {
+#if !PLATFORM_WEBGL
         NextScene = nextScene;
         SceneChangeEffect effect = Camera.main.GetComponent<SceneChangeEffect>();
         if (effect != null)
@@ -41,5 +33,8 @@ public class CSceneManager
         {
             SceneManager.LoadScene(IntermidiateScene);
         }
+#else
+        SceneManager.LoadScene(nextScene);
+#endif
     }
 }

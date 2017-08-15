@@ -11,6 +11,7 @@
     {
         base.OnRelease();
 
+        GameStateController.instance.onGameStart -= BeginFunctions;
         EndFunctions();
     }
 }

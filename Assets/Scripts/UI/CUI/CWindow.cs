@@ -8,7 +8,7 @@ namespace CUI
     public abstract class CWindow : BaseBehavior
     {
 
-#if DEBUG_UI
+#if DEBUG_SCRIPT
         private int n;    
 #endif
 
@@ -23,6 +23,12 @@ namespace CUI
 
         public event Action onResumingStart = null;
         public event Action onResumingComplete = null;
+
+        [SerializeField]
+        protected int _animationVerson;
+        public int animationVersion { get { return _animationVerson; } }
+
+        public virtual void SetAnimationVersion(int newVersion) { }
 
         protected void TriggerOnOpeningStartEvent()
         {
@@ -98,10 +104,10 @@ namespace CUI
 
         public virtual void OnUpdate()
         {
-#if DEBUG_UI
+#if DEBUG_SCRIPT
             if (n < 5)
 	        {
-	            Debug.Log(string.Format("{0} Update", uiType.Name));
+	            UnityEngine.Debug.Log(string.Format("{0} Update", gameObject.name));
 	            n++;
 	        }    
 #endif
@@ -112,9 +118,9 @@ namespace CUI
         public virtual IEnumerator _Open()
         {
 
-#if DEBUG_UI
+#if DEBUG_SCRIPT
             n = 0;
-            Debug.Log(string.Format("{0} Enter", gameObject.name));
+            UnityEngine.Debug.Log(string.Format("{0} Enter", gameObject.name));
 #endif
 
             yield break;
@@ -123,9 +129,9 @@ namespace CUI
         public virtual IEnumerator _Pause()
         {
 
-#if DEBUG_UI
+#if DEBUG_SCRIPT
             n = 0;
-            Debug.Log(string.Format("{0} Pause", gameObject.name));
+            UnityEngine.Debug.Log(string.Format("{0} Pause", gameObject.name));
 #endif
 
             yield break;
@@ -134,8 +140,8 @@ namespace CUI
         public virtual IEnumerator _Resume()
         {
 
-#if DEBUG_UI
-            Debug.Log(string.Format("{0} Resume", gameObject.name));
+#if DEBUG_SCRIPT
+            UnityEngine.Debug.Log(string.Format("{0} Resume", gameObject.name));
 #endif
 
             yield break;
@@ -144,8 +150,8 @@ namespace CUI
         public virtual IEnumerator _Close()
         {
 
-#if DEBUG_UI
-            Debug.Log(string.Format("{0} Exit", gameObject.name));
+#if DEBUG_SCRIPT
+            UnityEngine.Debug.Log(string.Format("{0} Exit", gameObject.name));
 #endif
 
             yield break;

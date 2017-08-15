@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 using EZObjectPools;
 using UnityEngine;
 
@@ -23,10 +24,9 @@ public class ActorManager : MonoSingleton<ActorManager>
             _poolDic[prefab] = EZObjectPool.CreateObjectPool(prefab, prefab.name, 20);
     }
 
-    protected override void OnRelease()
+    protected override IEnumerator _OnRelease()
     {
-        base.OnRelease();
-
+        yield return base._OnRelease();
         foreach (var actor in FindObjectsOfType<Actor>())
         {
             if (!actor.isTemplate) actor.OnRelease();

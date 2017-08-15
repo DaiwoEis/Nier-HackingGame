@@ -1,22 +1,15 @@
-﻿//using UnityEditor;
-
-using UnityEditor;
+﻿using System;
+using System.Collections;
 using UnityEngine;
 
 public class GameRoot : MonoBehaviour
 {
-    protected virtual void Awake()
-    {
-        WindowController.Create();
-        UIManager.Create();
 
-        WindowController.instance.transform.parent = transform;
-    }
+    protected virtual void Awake() { }
 
-    protected virtual void ClearGameController()
+    protected virtual IEnumerator _Release()
     {
-        UIManager.Release();
-        WindowController.Release();
+        yield break;
     }
 
     public void LoadMainMenuScene()
@@ -24,40 +17,41 @@ public class GameRoot : MonoBehaviour
         LoadScene(CSceneManager.MainMenuScene);
     }
 
-    public void LoadCurrentScene()
+    public void LoadCurrentLevel()
     {
         LoadScene(CSceneManager.CurrentScene);
     }
 
-    public void LoadNextScene()
+    public void LoadNextLevel()
     {
-        LoadScene(CSceneManager.GetNextSceneName(CSceneManager.CurrentScene));
+        LoadScene(GameDataManager.GetNextLevelName());
     }
 
     public void LoadScene(string sceneName)
     {
-        WindowController.instance.AddCommond(new CloseAllCommond());
-
-        this.StartCoroutine(0.6f, () =>
-        {
-            ClearGameController();
-            CSceneManager.LoadScene(sceneName);
-        });
+        StartCoroutine(_Release(), () => CSceneManager.LoadScene(sceneName));
     }
 
     public void QuitGame()
     {
-        WindowController.instance.AddCommond(new CloseAllCommond());
-
-        this.StartCoroutine(0.6f, () =>
+        StartCoroutine(_Release(), () =>
         {
-            ClearGameController();
-            Application.Quit();
 #if UNITY_EDITOR
-            EditorApplication.isPlaying = false;
+            UnityEditor.EditorApplication.isPlaying = false;
 #else
-                    Application.Quit();
+            Application.Quit();
 #endif
         });
+    }
+
+    public void StartCoroutine(IEnumerator iEnumerator, Action onComplete)
+    {
+        StartCoroutine(_Corotine(iEnumerator, onComplete));
+    }
+
+    private static IEnumerator _Corotine(IEnumerator iEnumerator, Action onComplete)
+    {
+        yield return iEnumerator;
+        if (onComplete != null) onComplete();
     }
 }

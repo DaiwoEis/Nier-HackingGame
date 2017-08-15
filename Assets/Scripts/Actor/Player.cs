@@ -14,4 +14,12 @@
             this.StartCoroutine(health.dealthTime, () => { ActorManager.instance.DestroyObject(gameObject); });
         };
     }
+
+    public override void OnRelease()
+    {
+        base.OnRelease();
+
+        GameStateController.instance.onGameStart -= BeginFunctions;
+        GameStateController.instance.onGameFailure -= EndFunctions;
+    }
 }

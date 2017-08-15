@@ -22,8 +22,10 @@ public class GameStateController : MonoSingleton<GameStateController>
 
     public event Action onGameFailure = null;
 
-    private void Awake()
-    { 
+    protected override void OnCreate()
+    {
+        base.OnCreate();
+
         foreach (var gameState in GetComponentsInChildren<GameState>())
         {
             gameState.Init(this);
@@ -56,9 +58,15 @@ public class GameStateController : MonoSingleton<GameStateController>
         };
     }
 
-    private IEnumerator Start()
+    protected override IEnumerator _OnRelease()
     {
-        yield return new WaitForEndOfFrame();
+        yield return base._OnRelease();
+        if (_currState != null)
+            _currState.OnExit(null);
+    }
+
+    public void Run()
+    {
         ChangeState(GameStateType.Init);
     }
 
